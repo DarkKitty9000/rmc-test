@@ -10,13 +10,12 @@ load_dotenv()
 db_password = os.getenv("POSTGRES_PASS")
 db_user = os.getenv("POSTGRES_USER")
 db_base = os.getenv("POSTGRES_DB")
+db_address = os.getenv("POSTGRES_ADDRESS")
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{db_user}:{db_password}@192.168.0.5/{db_base}"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_address}/{db_base}"
 
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
