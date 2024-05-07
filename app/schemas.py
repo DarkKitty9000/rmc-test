@@ -43,4 +43,4 @@ class NomenclaturePlacing(BaseModel):
     exteriermassiv: list[str] = Field(serialization_alias='ЭкстерьерМассив')
 
     class Config:
-        orm_mode = True
+        from_attributes = True

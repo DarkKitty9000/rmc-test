@@ -7,7 +7,7 @@ from .database import Base
 class NomenclaturePlacing(Base):
     __tablename__ = "nomenclature_placing"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     abbreviatura = Column(String)
     abbreviaturafedokrug = Column(String)
     articul = Column(String)
