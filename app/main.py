@@ -17,7 +17,7 @@ def get_db():
         db.close()
         
 
-@app.get("/nomenclatureplacing")
+@app.get("/LoadNomenclaturePlacing")
 async def get_nomenclature_placing(db: Session = Depends(get_db)):
     nomenclatures = crud.get_nomenclature_placing_from_db(db=db)
     
