@@ -20,7 +20,12 @@ def get_db():
 @app.get("/nomenclatureplacing")
 async def get_nomenclature_placing(db: Session = Depends(get_db)):
     nomenclature = crud.get_nomenclature_placing_from_db(db=db)
-    return nomenclature
+    res = {
+        'СтрокаТЧ': [
+            nomenclature,
+        ],
+    }
+    return res
 
 
 @app.get("/test")

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, ARRAY
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -43,8 +43,8 @@ class NomenclaturePlacing(Base):
     tipnaselennogopunkta  = Column(String)
     tipregiona  = Column(String)
     tipulicy  = Column(String)
-    tipynositeley  = Column(String)
+    tipynositeley  = Column(ARRAY(String))
     ulica  = Column(String)
     federalniyokrug = Column(String)
-    exteriermassiv = Column(String)
+    exteriermassiv = Column(ARRAY(String))
     
