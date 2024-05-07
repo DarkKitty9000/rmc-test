@@ -37,10 +37,10 @@ class NomenclaturePlacing(BaseModel):
     tipnaselennogopunkta: str
     tipregiona: str
     tipulicy: str
-    tipynositeley: str = Field(serialization_alias='ТипыНосителей')
+    tipynositeley: list[str] = Field(serialization_alias='ТипыНосителей')
     ulica: str = Field(serialization_alias='Улица')
     federalniyokrug: str = Field(serialization_alias='ФедеральныйОкруг')
-    exteriermassiv: str = Field(serialization_alias='ЭкстерьерМассив')
+    exteriermassiv: list[str] = Field(serialization_alias='ЭкстерьерМассив')
 
     class Config:
         orm_mode = True
