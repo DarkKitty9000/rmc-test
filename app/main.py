@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
@@ -9,6 +10,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 def get_db():
     db = SessionLocal()
     try:
@@ -17,7 +26,7 @@ def get_db():
         db.close()
         
 
-@app.get("/LoadNomenclaturePlacing")
+@app.post("/LoadNomenclaturePlacing")
 async def get_nomenclature_placing(db: Session = Depends(get_db)):
     nomenclatures = crud.get_nomenclature_placing_from_db(db=db)
     
