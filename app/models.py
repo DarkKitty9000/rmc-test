@@ -7,8 +7,8 @@ from .database import Base
 class Token(Base):
     __tablename__ = "token"
     
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    token = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    token = Column(String, primary_key=True)
     
     user = relationship("User", back_populates="token")
 
