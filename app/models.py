@@ -17,7 +17,7 @@ class NomenclaturePlacing(Base):
     dictorskayanachitka  = Column(String)
     dictorskayanachitkapoumolchaniu  = Column(Boolean)
     dom  = Column(String)
-    dostupnostnomenclatury  = Column(String)
+    dostupnostnomenclatury  = Column(Boolean)
     zvuk = Column(String)
     zvukpoumolchaniu  = Column(Boolean)
     zvukovayapodlozhka  = Column(String)
