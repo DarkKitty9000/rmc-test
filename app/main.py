@@ -30,7 +30,7 @@ def get_db():
 async def get_nomenclature_placing(db: Session = Depends(get_db)):
     nomenclatures = crud.get_nomenclature_placing_from_db(db=db)
     
-    temp = []
+    temp_list = []
     
     for nomenclature in nomenclatures:
         values = { 
@@ -70,14 +70,9 @@ async def get_nomenclature_placing(db: Session = Depends(get_db)):
             "ТипыНосителей": nomenclature.tipynositeley, 
             "НаименованиеФильтрованное": nomenclature.naimenovaniefiltrovannoe 
         }
-        temp.append(values)
+        temp_list.append(values)
     
     res = {
-        'СтрокаТЧ': temp
+        'СтрокаТЧ': temp_list
     }
     return res
-
-
-@app.get("/test")
-def get_something():
-    print('got_something')

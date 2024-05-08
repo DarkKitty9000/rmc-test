@@ -1,7 +1,28 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, ARRAY
+from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .database import Base
+
+
+class Token(Base):
+    __tablename__ = "token"
+    
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    token = Column(String)
+    
+    user = relationship("User", back_populates="token")
+
+
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    email = Column(String, unique=True)
+    name_full = Column(String)
+    code = Column(String)
+    
+    token = relationship("Token", back_populates="user")
+    nomenclature_placing = relationship("NomenclaturePlacing", back_populates="owner")
 
 
 class NomenclaturePlacing(Base):
@@ -47,4 +68,6 @@ class NomenclaturePlacing(Base):
     ulica  = Column(String)
     federalniyokrug = Column(String)
     exteriermassiv = Column(ARRAY(String))
+    owner_id = Column(Integer, ForeignKey("users.id"))
     
+    owner = relationship("User", back_populates="nomenclature_placing")
