@@ -7,7 +7,7 @@ from .database import Base
 class Token(Base):
     __tablename__ = "token"
     
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_link = Column(String, ForeignKey("users.link"))
     token = Column(String, primary_key=True)
     
     user = relationship("User", back_populates="token")
@@ -16,10 +16,9 @@ class Token(Base):
 class User(Base):
     __tablename__ = "users"
     
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
-    email = Column(String, unique=True)
+    link = Column(String, unique=True)
+    email = Column(String)
     name_full = Column(String)
-    code = Column(String)
     
     token = relationship("Token", back_populates="user")
     nomenclature_placing = relationship("NomenclaturePlacing", back_populates="owner")
