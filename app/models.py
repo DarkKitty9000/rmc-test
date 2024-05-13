@@ -16,7 +16,7 @@ class Token(Base):
 class User(Base):
     __tablename__ = "users"
     
-    link = Column(String, unique=True)
+    link = Column(String, unique=True, primary_key=True)
     email = Column(String)
     name_full = Column(String)
     
