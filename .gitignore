@@ -139,3 +139,7 @@ GitHub.sublime-settings
 
 #Directories
 #/test_*/
+
+#alembic
+alembic*
+alembic.*

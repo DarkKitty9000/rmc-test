@@ -4,15 +4,31 @@ from fastapi import HTTPException
 from . import models, schemas
 
 
-def get_nomenclature_placing_from_db(db: Session):
-    return db.query(models.NomenclaturePlacing).all()
+def get_nomenclature_placing_from_db(
+        db: Session,
+        page: int,
+        size: int,
+    ):
+    offset_min = page * size
+    offset_max = (page + 1) * size
+    response = db.query(models.NomenclaturePlacing).all()
+    return response[offset_min: offset_max]
 
 
-def get_nomenclature_placing_from_db_for_user(db: Session, token: str):
+def get_nomenclature_placing_from_db_for_user(
+        db: Session,
+        token: str,
+        page: int,
+        size: int,
+    ):
+    offset_min = page * size
+    offset_max = (page + 1) * size
     user = get_user_by_token(db=db, token=token)
-    
     try:
-        return db.query(models.NomenclaturePlacing).filter(models.NomenclaturePlacing.owner_id == user.user_id)
+        response = db.query(models.NomenclaturePlacing).filter(
+            models.NomenclaturePlacing.owner_link == user.user_link
+        )
+        return response[offset_min: offset_max]
     except:
         return None
     

@@ -27,7 +27,7 @@ class User(Base):
 class NomenclaturePlacing(Base):
     __tablename__ = "nomenclature_placing"
 
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     abbreviatura = Column(String)
     abbreviaturafedokrug = Column(String)
     articul = Column(String)
@@ -67,6 +67,6 @@ class NomenclaturePlacing(Base):
     ulica  = Column(String)
     federalniyokrug = Column(String)
     exteriermassiv = Column(ARRAY(String))
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_link = Column(String, ForeignKey("users.link"))
     
     owner = relationship("User", back_populates="nomenclature_placing")
