@@ -35,6 +35,8 @@ def get_nomenclature_placing_from_db_for_user(
 
 def get_user_by_token(db: Session, token: str):
     try:
-        return db.query(models.Token).filter(models.Token.token == token).first()
+        return db.query(models.Token).filter(
+            models.Token.token == token
+        ).first()
     except:
         raise HTTPException(status_code=404, detail="Пользователь не найден.")

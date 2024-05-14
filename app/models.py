@@ -21,7 +21,10 @@ class User(Base):
     name_full = Column(String)
     
     token = relationship("Token", back_populates="user")
-    nomenclature_placing = relationship("NomenclaturePlacing", back_populates="owner")
+    nomenclature_placing = relationship(
+        "NomenclaturePlacing",
+        back_populates="owner"
+    )
 
 
 class NomenclaturePlacing(Base):
