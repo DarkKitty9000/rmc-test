@@ -20,6 +20,22 @@ contragent_brand = Table(
 )
 
 
+nomenclature_contragent = Table(
+    'nomenclature_contragent',
+    Base.metadata,
+    Column(
+        'nomenclature_link',
+        ForeignKey('nomenclature_placing.link'),
+        primary_key=True
+    ),
+    Column(
+        'contragent_link',
+        ForeignKey('contragent.link'),
+        primary_key=True
+    )
+)
+
+
 class Token(Base):
     __tablename__ = "token"
     
@@ -69,7 +85,7 @@ class User(Base):
 class NomenclaturePlacing(Base):
     __tablename__ = "nomenclature_placing"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    link = Column(String, primary_key=True)
     abbreviatura = Column(String)
     abbreviaturafedokrug = Column(String)
     articul = Column(String)
@@ -160,6 +176,7 @@ class Contragent(Base):
 
     nomenclatures = relationship(
         "NomenclaturePlacing",
+        secondary=nomenclature_contragent,
         back_populates="contragents"
     )
     users = relationship(
@@ -170,6 +187,10 @@ class Contragent(Base):
     brands = relationship(
         "Brand",
         secondary=contragent_brand,
+        back_populates="contragents"
+    )
+    contact_persons = relationship(
+        "ContactPerson",
         back_populates="contragents"
     )
 
@@ -185,3 +206,34 @@ class Brand(Base):
         secondary=contragent_brand,
         back_populates="brands"
     )
+
+
+class ContactPerson(Base):
+    __tablename__ = "contact_person"
+
+    link = Column(String, primary_key=True)
+    contragent_link = Column(String, ForeignKey('contragent.link'))
+    site_role = Column(String)
+
+    contragents = relationship("Contragent", back_populates="contact_persons")
+    cp_info = relationship("CPInfo", back_populates="contact_persons")
+
+
+class CITypes(Base):
+    __tablename__ = "ci_types"
+
+    id = Column(Integer, primary_key=True, autoincrement="auto")
+    type = Column(String, nullable=False)
+
+    cp_info = relationship("CPInfo", back_populates="ci_types")
+
+
+class CPInfo(Base):
+    __tablename__ = "cp_contact_info"
+
+    cp_link = Column(String, ForeignKey("contact_person.link"), primary_key=True)
+    ci_type = Column(Integer, ForeignKey("ci_types.id"), primary_key=True)
+    value = Column(String, nullable=False)
+
+    contact_persons = relationship("ContactPerson", back_populates="cp_info")
+    ci_types = relationship("CITypes", back_populates="cp_info")
