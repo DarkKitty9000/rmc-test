@@ -1,14 +1,14 @@
 from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, CHAR, Date, Table
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 
-contragent_user = Table(
-    'contragent_user',
+contragent_cp = Table(
+    'contragent_cp',
     Base.metadata,
     Column('contragent_link', ForeignKey('contragent.link'), primary_key=True),
-    Column('user_link', ForeignKey('users.link'), primary_key=True)
+    Column('cp_link', ForeignKey('contact_person.link'), primary_key=True)
 )
 
 
@@ -74,11 +74,6 @@ class User(Base):
     account_info = relationship(
         "AccountInfo",
         back_populates="link_rel"
-    )
-    contragents = relationship(
-        "Contragent",
-        secondary=contragent_user,
-        back_populates="users"
     )
 
 
@@ -179,11 +174,6 @@ class Contragent(Base):
         secondary=nomenclature_contragent,
         back_populates="contragents"
     )
-    users = relationship(
-        "User",
-        secondary=contragent_user,
-        back_populates="contragents"
-    )
     brands = relationship(
         "Brand",
         secondary=contragent_brand,
@@ -191,6 +181,7 @@ class Contragent(Base):
     )
     contact_persons = relationship(
         "ContactPerson",
+        secondary=contragent_cp,
         back_populates="contragents"
     )
 
@@ -212,11 +203,18 @@ class ContactPerson(Base):
     __tablename__ = "contact_person"
 
     link = Column(String, primary_key=True)
-    contragent_link = Column(String, ForeignKey('contragent.link'))
+    full_name = Column(String)
     site_role = Column(String)
 
-    contragents = relationship("Contragent", back_populates="contact_persons")
-    cp_info = relationship("CPInfo", back_populates="contact_persons")
+    contragents = relationship(
+        "Contragent",
+        secondary=contragent_cp,
+        back_populates="contact_persons"
+    )
+    cp_info = relationship(
+        "CPInfo",
+        back_populates="contact_persons"
+    )
 
 
 class CITypes(Base):
