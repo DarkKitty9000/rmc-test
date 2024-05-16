@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from database import Base
 
-
+# Описание промежуточных таблиц для таблиц со связью многие-ко-многим.
 contragent_cp = Table(
     'contragent_cp',
     Base.metadata,
@@ -36,6 +36,7 @@ nomenclature_contragent = Table(
 )
 
 
+# Описание основных таблиц базы данных
 class Token(Base):
     __tablename__ = "token"
     

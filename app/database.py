@@ -5,13 +5,14 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv() # Загружаем переменные среды из .env файла.
 
 db_password = os.getenv("POSTGRES_PASS")
 db_user = os.getenv("POSTGRES_USER")
 db_base = os.getenv("POSTGRES_DB")
 db_address = os.getenv("POSTGRES_ADDRESS")
 
+# Строка подключения к БД.
 SQLALCHEMY_DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_address}/{db_base}"
 
 
