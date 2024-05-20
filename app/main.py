@@ -30,14 +30,23 @@ def get_db():
 @app.post("/LoadNomenclaturePlacing")
 async def get_nomenclature_placing(
     db: Session = Depends(get_db),
+    token: str = None,
     page: int = Query(ge=0, default=0),
     size: int = Query(ge=1, le=100)
 ):
-    nomenclatures = crud.get_nomenclature_placing_from_db(
-        db=db,
-        page=page,
-        size=size
-    )
+    if token != "" or token is not None:
+        nomenclatures = crud.get_nomenclature_placing_from_db_for_user(
+            db=db,
+            token=token,
+            page=page,
+            size=size
+        )
+    else:
+        nomenclatures = crud.get_nomenclature_placing_from_db(
+            db=db,
+            page=page,
+            size=size
+        )
     
     temp_list = []
     

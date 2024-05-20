@@ -1,9 +1,10 @@
-from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, CHAR, Date, Table
+from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, CHAR, Date, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from database import Base
 
 # Описание промежуточных таблиц для таблиц со связью многие-ко-многим.
+# -----------------------------------------------------------------------------
 contragent_cp = Table(
     'contragent_cp',
     Base.metadata,
@@ -37,6 +38,9 @@ nomenclature_contragent = Table(
 
 
 # Описание основных таблиц базы данных
+# -----------------------------------------------------------------------------
+
+# Таблица с токенами авторизации для пользователей.
 class Token(Base):
     __tablename__ = "token"
     
@@ -46,16 +50,19 @@ class Token(Base):
     user = relationship("User", back_populates="token")
 
 
+# Данные авторизации для входа на сайт.
 class AccountInfo(Base):
     __tablename__ = "account_info"
+    __table_args__ = (
+        UniqueConstraint('link', 'email', name='account_info_unique'),
+    )
 
     link = Column(
         String,
         ForeignKey("users.link"),
-        primary_key=True,
-        unique=True
+        primary_key=True
     )
-    email = Column(String, primary_key=True, unique=True)
+    email = Column(String, primary_key=True)
     password = Column(String)
 
     link_rel = relationship(
@@ -64,6 +71,7 @@ class AccountInfo(Base):
     )
 
 
+# Пользователи приложения. Как сотрудники, так и контактные лица.
 class User(Base):
     __tablename__ = "users"
     
@@ -121,24 +129,27 @@ class NomenclaturePlacing(Base):
     ulica  = Column(String)
     federalniyokrug = Column(String)
     exteriermassiv = Column(ARRAY(String))
-    owner_link = Column(String, ForeignKey("contragent.link"))
     
     contragents = relationship("Contragent", back_populates="nomenclatures")
+    contents = relationship(
+        "ContentWeb",
+        back_populates="nomenclatures"
+    )
 
 
 class ContentWeb(Base):
     __tablename__ = "content_web"
 
-    id = Column(Integer, primary_key=True, unique=True, autoincrement="auto")
+    link = Column(String, primary_key=True, unique=True)
     bezmp = Column(Boolean)
-    brand = Column(String)
+    brand_link = Column(String, ForeignKey("brand.link"))
     buduschiy = Column(Boolean)
     gotoviycontent = Column(Boolean)
     dataokonchaniya = Column(String)
     datasozdaniya = Column(String)
     datastarta = Column(String)
     kl = Column(String)
-    klkod = Column(String)
+    cp_link = Column(String, ForeignKey("contact_person.link"))
     kolichestvoscenariev = Column(Integer)
     contentkod = Column(String)
     kontragent = Column(String)
@@ -156,6 +167,25 @@ class ContentWeb(Base):
     scenariykod = Column(String)
     tekuschiy = Column(Boolean)
     fonoviy = Column(Boolean)
+    ca_link = Column(String, ForeignKey("contragent.link"))
+    nomenclature_link = Column(String, ForeignKey("nomenclature_placing.link"))
+
+    brands = relationship(
+        "Brand",
+        back_populates="contents"
+    )
+    contact_persons = relationship(
+        "ContactPerson",
+        back_populates="contents"
+    )
+    contragents = relationship(
+        "Contragent",
+        back_populates="contents"
+    )
+    nomenclatures = relationship(
+        "NomenclaturePlacing",
+        back_populates="contents"
+    )
 
 
 class Contragent(Base):
@@ -185,6 +215,10 @@ class Contragent(Base):
         secondary=contragent_cp,
         back_populates="contragents"
     )
+    contents = relationship(
+        "ContentWeb",
+        back_populates="contragents"
+    )
 
 
 class Brand(Base):
@@ -198,8 +232,13 @@ class Brand(Base):
         secondary=contragent_brand,
         back_populates="brands"
     )
+    contents = relationship(
+        "ContentWeb",
+        back_populates="brands"
+    )
 
 
+# Контактные лица.
 class ContactPerson(Base):
     __tablename__ = "contact_person"
 
@@ -216,8 +255,13 @@ class ContactPerson(Base):
         "CPInfo",
         back_populates="contact_persons"
     )
+    contents = relationship(
+        "ContentWeb",
+        back_populates="contact_persons"
+    )
 
 
+# Виды контактной информации.
 class CITypes(Base):
     __tablename__ = "ci_types"
 
@@ -227,12 +271,13 @@ class CITypes(Base):
     cp_info = relationship("CPInfo", back_populates="ci_types")
 
 
+# Контактная информация контактных лиц.
 class CPInfo(Base):
     __tablename__ = "cp_contact_info"
 
     cp_link = Column(String, ForeignKey("contact_person.link"), primary_key=True)
     ci_type = Column(Integer, ForeignKey("ci_types.id"), primary_key=True)
-    value = Column(String, nullable=False)
+    value = Column(String, nullable=False, primary_key=True)
 
     contact_persons = relationship("ContactPerson", back_populates="cp_info")
     ci_types = relationship("CITypes", back_populates="cp_info")
