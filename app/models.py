@@ -130,7 +130,11 @@ class NomenclaturePlacing(Base):
     federalniyokrug = Column(String)
     exteriermassiv = Column(ARRAY(String))
     
-    contragents = relationship("Contragent", back_populates="nomenclatures")
+    contragents = relationship(
+        "Contragent",
+        secondary=nomenclature_contragent,
+        back_populates="nomenclatures"
+    )
     contents = relationship(
         "ContentWeb",
         back_populates="nomenclatures"
