@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, CHAR, Date, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from database import Base
+from .database import Base
 
 # Описание промежуточных таблиц для таблиц со связью многие-ко-многим.
 # -----------------------------------------------------------------------------
