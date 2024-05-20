@@ -83,7 +83,7 @@ async def get_nomenclature_placing(
                 "Лого": nomenclature.logo, 
                 "АббревиатураФедОкруг": nomenclature.abbreviaturafedokrug, 
                 "ОператорАремси": nomenclature.operatoraremcy, 
-                "Владелец": nomenclature.owner_link, 
+                "Владелец": nomenclature.contragents, 
                 "ОсновноеКонтактноеЛицоКод": nomenclature.osnovnoekontaktnoelicokod, 
                 "ЭкстерьерМассив": nomenclature.exteriermassiv, 
                 "ТипыНосителей": nomenclature.tipynositeley, 
