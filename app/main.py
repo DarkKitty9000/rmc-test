@@ -34,7 +34,7 @@ async def get_nomenclature_placing(
     page: int = Query(ge=0, default=0),
     size: int = Query(ge=1, le=100)
 ):
-    if token != "" or token is not None:
+    if token != "" and token is not None:
         nomenclatures = crud.get_nomenclature_placing_from_db_for_user(
             db=db,
             token=token,
@@ -105,7 +105,7 @@ async def get_nomenclature_placing_for_user(
     page: int = Query(ge=0, default=0),
     size: int = Query(ge=1, le=100)
 ):
-    if token is None and token == "":
+    if token is None or token == "":
         raise HTTPException(status_code=401, detail="Empty token")
     nomenclatures = crud.get_nomenclature_placing_from_db_for_user(
         db=db,
