@@ -20,6 +20,7 @@ def get_nomenclature_placing_from_db(
     offset_min = page * size
     offset_max = (page + 1) * size
     response = db.query(models.NomenclaturePlacing).all()
+    return response
     return response[offset_min: offset_max]
 
 
