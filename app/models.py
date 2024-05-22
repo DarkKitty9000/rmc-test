@@ -1,7 +1,8 @@
-from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, CHAR, Date, Table, UniqueConstraint
+from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, \
+     CHAR, DateTime, Table, UniqueConstraint, Date
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 # Описание промежуточных таблиц для таблиц со связью многие-ко-многим.
 # -----------------------------------------------------------------------------
@@ -36,6 +37,53 @@ nomenclature_contragent = Table(
     )
 )
 
+
+content_brand = Table(
+    'content_brand',
+    Base.metadata,
+    Column(
+        'content_link',
+        ForeignKey('content_web.link'),
+        primary_key=True
+    ),
+    Column(
+        'brand_link',
+        ForeignKey('brand.link'),
+        primary_key=True
+    )
+)
+
+
+content_contragent = Table(
+    'content_contragent',
+    Base.metadata,
+    Column(
+        'content_link',
+        ForeignKey('content_web.link'),
+        primary_key=True
+    ),
+    Column(
+        'contragent_link',
+        ForeignKey('contragent.link'),
+        primary_key=True
+    )
+)
+
+
+# content_nomenclature = Table(
+#     'content_contragent',
+#     Base.metadata,
+#     Column(
+#         'content_link',
+#         ForeignKey('content.link'),
+#         primary_key=True
+#     ),
+#     Column(
+#         'contragent_link',
+#         ForeignKey('contagent.link'),
+#         primary_key=True
+#     )
+# )
 
 # Описание основных таблиц базы данных
 # -----------------------------------------------------------------------------
@@ -146,12 +194,11 @@ class ContentWeb(Base):
 
     link = Column(String, primary_key=True, unique=True)
     bezmp = Column(Boolean)
-    brand_link = Column(String, ForeignKey("brand.link"))
     buduschiy = Column(Boolean)
     gotoviycontent = Column(Boolean)
-    dataokonchaniya = Column(String)
-    datasozdaniya = Column(String)
-    datastarta = Column(String)
+    dataokonchaniya = Column(DateTime(False))
+    datasozdaniya = Column(DateTime(False))
+    datastarta = Column(DateTime(False))
     kl = Column(String)
     cp_link = Column(String, ForeignKey("contact_person.link"))
     kolichestvoscenariev = Column(Integer)
@@ -166,16 +213,16 @@ class ContentWeb(Base):
     primer = Column(Boolean)
     proshedshiy = Column(Boolean)
     rasshireniefailacontenta = Column(String)
-    strokabrendov = Column(String)
+    logo = Column(String)
     scenariy = Column(String)
     scenariykod = Column(String)
     tekuschiy = Column(Boolean)
     fonoviy = Column(Boolean)
-    ca_link = Column(String, ForeignKey("contragent.link"))
     nomenclature_link = Column(String, ForeignKey("nomenclature_placing.link"))
 
     brands = relationship(
         "Brand",
+        secondary=content_brand,
         back_populates="contents"
     )
     contact_persons = relationship(
@@ -184,6 +231,7 @@ class ContentWeb(Base):
     )
     contragents = relationship(
         "Contragent",
+        secondary=content_contragent,
         back_populates="contents"
     )
     nomenclatures = relationship(
@@ -221,6 +269,7 @@ class Contragent(Base):
     )
     contents = relationship(
         "ContentWeb",
+        secondary=content_contragent,
         back_populates="contragents"
     )
 
@@ -238,6 +287,7 @@ class Brand(Base):
     )
     contents = relationship(
         "ContentWeb",
+        secondary=content_brand,
         back_populates="brands"
     )
 

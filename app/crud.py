@@ -45,7 +45,9 @@ def get_nomenclature_placing_from_db_for_user(
     contragents = get_contragent_by_user(db=db, user=user)
     try:
         response = db.query(models.NomenclaturePlacing).filter(
-            models.NomenclaturePlacing.owner_link == contragents[0].link
+            models.NomenclaturePlacing.contragents.any(
+                link=contragents[0].link
+            )
         )
         return response[offset_min: offset_max]
     except:
@@ -101,6 +103,6 @@ def get_contragent_by_user(db: Session, user: models.User):
     user - Объект пользователя.
     """
     contragents = db.query(models.Contragent).filter(
-        models.Contragent.users.any(link=user.user_link)
+        models.Contragent.contact_persons.any(link=user.link)
     ).all()
     return contragents
