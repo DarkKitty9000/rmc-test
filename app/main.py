@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Query, HTTPException
+from fastapi import FastAPI, Depends, Query, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -30,22 +30,23 @@ def get_db():
 @app.post("/LoadNomenclaturePlacing")
 async def get_nomenclature_placing(
     db: Session = Depends(get_db),
-    token: str = None,
-    page: int = Query(ge=0, default=0),
-    size: int = Query(ge=1, le=100)
-):
+    xrmccookie: str = Header(default = None),
+    # page: int = Query(ge=0, default=0),
+    # size: int = Query(ge=1, le=100)
+): 
+    token = xrmccookie
     if token != "" and token is not None:
         nomenclatures = crud.get_nomenclature_placing_from_db_for_user(
             db=db,
             token=token,
-            page=page,
-            size=size
+            # page=page,
+            # size=size
         )
     else:
         nomenclatures = crud.get_nomenclature_placing_from_db(
             db=db,
-            page=page,
-            size=size
+            # page=page,
+            # size=size
         )
     
     temp_list = []
@@ -104,17 +105,18 @@ async def get_nomenclature_placing(
 @app.post("/LoadNomenclaturePlacingForUser")
 async def get_nomenclature_placing_for_user(
     db: Session = Depends(get_db),
-    token: str = None,
-    page: int = Query(ge=0, default=0),
-    size: int = Query(ge=1, le=100)
+    xrmccookie: str = Header(default = None),
+    # page: int = Query(ge=0, default=0),
+    # size: int = Query(ge=1, le=100)
 ):
+    token = xrmccookie
     if token is None or token == "":
         raise HTTPException(status_code=401, detail="Empty token")
     nomenclatures = crud.get_nomenclature_placing_from_db_for_user(
         db=db,
         token=token,
-        page=page,
-        size=size
+        # page=page,
+        # size=size
     )
     
     temp_list = []
@@ -169,16 +171,18 @@ async def get_nomenclature_placing_for_user(
 @app.post('/LoadContentWeb')
 async def load_content_web(
     db: Session = Depends(get_db),
-    token: str = None,
-    page: int = Query(ge=0, default=0),
-    size: int = Query(ge=1, le=100)
+    xrmccookie: str = Header(default = None),
+    # page: int = Query(ge=0, default=0),
+    # size: int = Query(ge=1, le=100)
 ):
+    token = xrmccookie
     if token is None or token == "":
         contents = crud.get_content_web(db=db)
         #raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents = crud.get_content_web_for_user(db = db, token = token, page = page, size = size)
+        contents = crud.get_content_web_for_user(db = db, token = token) 
+                                                #  page = page, size = size)
 
     temp_list = []
 

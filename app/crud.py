@@ -7,9 +7,9 @@ from . import models, schemas
 
 # Метод для получения мест размещения номенклатуры
 def get_nomenclature_placing_from_db(
-        db: Session,
-        page: int,
-        size: int,
+        db: Session
+        # page: int,
+        # size: int,
     ):
     """
     Метод для получения мест размещения номенклатуры
@@ -17,17 +17,17 @@ def get_nomenclature_placing_from_db(
     page - Индекс страницы для пагинации,
     size - Размер страницы для пагинации.
     """
-    offset_min = page * size
-    offset_max = (page + 1) * size
+    # offset_min = page * size
+    # offset_max = (page + 1) * size
     response = db.query(models.NomenclaturePlacing).all()
-    return response[offset_min: offset_max]
+    return response #[offset_min: offset_max]
 
 
 def get_nomenclature_placing_from_db_for_user(
         db: Session,
         token: str,
-        page: int,
-        size: int,
+        # page: int,
+        # size: int,
     ):
     """
     Метод для получения мест размещения номенклатуры по пользователю
@@ -36,8 +36,8 @@ def get_nomenclature_placing_from_db_for_user(
     page - Индекс страницы для пагинации,
     size - Размер страницы для пагинации.
     """
-    offset_min = page * size
-    offset_max = (page + 1) * size
+    # offset_min = page * size
+    # offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
     
@@ -49,7 +49,7 @@ def get_nomenclature_placing_from_db_for_user(
                 link=contragents[0].link
             )
         )
-        return response[offset_min: offset_max]
+        return response#[offset_min: offset_max]
     except:
         return None
     
@@ -68,8 +68,8 @@ def get_content_web_for_user(db: Session, token: str, page: int, size: int,) -> 
     Метод получения контента по пользователю.
     *** в разработке
     """
-    offset_min = page * size
-    offset_max = (page + 1) * size
+    # offset_min = page * size
+    # offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
 
@@ -77,7 +77,7 @@ def get_content_web_for_user(db: Session, token: str, page: int, size: int,) -> 
 
         response = db.query(models.ContentWeb).all()
 
-        return response[offset_min: offset_max]
+        return response#[offset_min: offset_max]
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -88,7 +88,7 @@ def get_content_web_for_user(db: Session, token: str, page: int, size: int,) -> 
                     link=contragents[0].link
              )
          )
-            return response[offset_min: offset_max]
+            return response#[offset_min: offset_max]
         except:
             return None
     
