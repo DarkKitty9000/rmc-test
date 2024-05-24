@@ -40,18 +40,23 @@ def get_nomenclature_placing_from_db_for_user(
     # offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
-    
+
+    if user.is_employee:
+        response = db.query(models.NomenclaturePlacing).all()
+        return response #[offset_min: offset_max]
+
+    else:
     # Получаем всех контрагентов по пользователю.
-    contragents = get_contragent_by_user(db=db, user=user)
-    try:
-        response = db.query(models.NomenclaturePlacing).filter(
-            models.NomenclaturePlacing.contragents.any(
-                link=contragents[0].link
+        contragents = get_contragent_by_user(db=db, user=user)
+        try:
+            response = db.query(models.NomenclaturePlacing).filter(
+                models.NomenclaturePlacing.contragents.any(
+                    link=contragents[0].link
+                )   
             )
-        )
-        return response#[offset_min: offset_max]
-    except:
-        return None
+            return response#[offset_min: offset_max]
+        except:
+            return None
     
 
 def get_content_web(db: Session) -> models.ContentWeb:

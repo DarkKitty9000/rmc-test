@@ -185,7 +185,7 @@ async def load_content_web(
                                                 #  page = page, size = size)
 
     temp_list = []
-
+    print(contents)
     if contents is not None:        
         for element in contents:
             values = { 
