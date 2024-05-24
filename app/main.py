@@ -174,6 +174,7 @@ async def load_content_web(
     # size: int = Query(ge=1, le=100)
 ):
     token = xrmccookie
+    print(request)
     if token is None or token == "":
         contents = crud.get_content_web(db=db)
         #raise HTTPException(status_code=401, detail="Empty token")
