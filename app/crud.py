@@ -59,23 +59,39 @@ def get_content_web(db: Session) -> models.ContentWeb:
     Метод получения контента
     *** в разработке
     """
-    response = db.query(models.ContentWeb).all()
+    response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
     return response
 
 
-def get_content_web_for_user(db: Session, token: str) -> models.ContentWeb:
+def get_content_web_for_user(db: Session, token: str, page: int, size: int,) -> models.ContentWeb:
     """
     Метод получения контента по пользователю.
     *** в разработке
     """
-    user = get_user_by_token(db=db, token=token)
-    try:
-        response = db.query(models.ContentWeb).filter(
-            models.ContentWeb.owner_link == user.user_link
-        )
-        return response
-    except:
-        return None
+    offset_min = page * size
+    offset_max = (page + 1) * size
+
+    user = get_user_by_token(db=db, token=token) # Получаем пользователя
+
+    if user.is_employee:
+
+        response = db.query(models.ContentWeb).all()
+
+        return response[offset_min: offset_max]
+    
+    else:
+    # Получаем всех контрагентов по пользователю.
+        contragents = get_contragent_by_user(db=db, user=user)
+        try:
+            response = db.query(models.ContentWeb).filter(
+                models.ContentWeb.contragents.any(
+                    link=contragents[0].link
+             )
+         )
+            return response[offset_min: offset_max]
+        except:
+            return None
+    
 
 
 def get_user_by_token(db: Session, token: str):

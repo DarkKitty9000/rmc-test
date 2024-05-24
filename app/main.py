@@ -166,15 +166,19 @@ async def get_nomenclature_placing_for_user(
     return res
 
 
-@app.route('/LoadContentWeb')
+@app.post('/LoadContentWeb')
 async def load_content_web(
-    db: Session,
-    token: str = None
+    db: Session = Depends(get_db),
+    token: str = None,
+    page: int = Query(ge=0, default=0),
+    size: int = Query(ge=1, le=100)
 ):
     if token is None or token == "":
-        raise HTTPException(status_code=401, detail="Empty token")
+        contents = crud.get_content_web(db=db)
+        #raise HTTPException(status_code=401, detail="Empty token")
     
-    contents = crud.get_content_web(db=db)
+    else:
+        contents = crud.get_content_web_for_user(db = db, token = token, page = page, size = size)
 
     temp_list = []
 
@@ -196,13 +200,13 @@ async def load_content_web(
                 "НаСервере": element.naservere,
                 "ДатаОкончания": element.dataokonchaniya,
                 "КЛ": element.kl,
-                "КЛКод": element.klkod,
+                "КЛКод": element.cp_link,
                 "Фоновый": element.fonoviy,
                 "ГотовыйКонтент": element.gotoviycontent,
                 "НевыполненныеЗадачи": element.nevypolnennyezadachi,
-                "СтрокаБрендов": element.strokabrendov,
-                "Контрагент": element.kontragent,
-                "Бренд": element.brand,
+                "СтрокаБрендов": element.logo,
+                "Контрагент": element.contragents,
+                "Бренд": element.brands,
                 "ОПФ": element.opf,
                 "Номенклатура": element.nomenklatura,
                 "Пример": element.primer,
@@ -216,51 +220,51 @@ async def load_content_web(
     return res
 
 
-@app.route('/LoadContentWebForUser')
-async def load_content_web_for_user(
-    db: Session,
-    token: str = None
-):
-    if token is None or token == "":
-        raise HTTPException(status_code=401, detail="Empty token")
+# @app.route('/LoadContentWebForUser')
+# async def load_content_web_for_user(
+#     db: Session,
+#     token: str = None
+# ):
+#     if token is None or token == "":
+#         raise HTTPException(status_code=401, detail="Empty token")
     
-    contents = crud.get_content_web(db=db)
+#     contents = crud.get_content_web(db=db)
 
-    temp_list = []
+#     temp_list = []
 
-    if contents is not None:        
-        for element in contents:
-            values = { 
-                "Наименование": element.naimenovanie,
-                "КонтентКод": element.contentkod,
-                "ДатаСоздания": element.datasozdaniya,
-                "Текущий": element.tekuschiy,
-                "Прошедший": element.proshedshiy,
-                "Будущий": element.buduschiy,
-                "БезМП": element.bezmp,
-                "КоличествоСценариев": element.kolichestvoscenariev,
-                "СценарийКод": element.scenariykod,
-                "Сценарий": element.scenariy,
-                "Ответственный": element.otvetstvenniy,
-                "РасширениеФайлаКонтента": element.rasshireniefailacontenta,
-                "НаСервере": element.naservere,
-                "ДатаОкончания": element.dataokonchaniya,
-                "КЛ": element.kl,
-                "КЛКод": element.klkod,
-                "Фоновый": element.fonoviy,
-                "ГотовыйКонтент": element.gotoviycontent,
-                "НевыполненныеЗадачи": element.nevypolnennyezadachi,
-                "СтрокаБрендов": element.strokabrendov,
-                "Контрагент": element.kontragent,
-                "Бренд": element.brand,
-                "ОПФ": element.opf,
-                "Номенклатура": element.nomenklatura,
-                "Пример": element.primer,
-                "ДатаСтарта": element.datastarta, 
-            }
-            temp_list.append(values)
+#     if contents is not None:        
+#         for element in contents:
+#             values = { 
+#                 "Наименование": element.naimenovanie,
+#                 "КонтентКод": element.contentkod,
+#                 "ДатаСоздания": element.datasozdaniya,
+#                 "Текущий": element.tekuschiy,
+#                 "Прошедший": element.proshedshiy,
+#                 "Будущий": element.buduschiy,
+#                 "БезМП": element.bezmp,
+#                 "КоличествоСценариев": element.kolichestvoscenariev,
+#                 "СценарийКод": element.scenariykod,
+#                 "Сценарий": element.scenariy,
+#                 "Ответственный": element.otvetstvenniy,
+#                 "РасширениеФайлаКонтента": element.rasshireniefailacontenta,
+#                 "НаСервере": element.naservere,
+#                 "ДатаОкончания": element.dataokonchaniya,
+#                 "КЛ": element.kl,
+#                 "КЛКод": element.klkod,
+#                 "Фоновый": element.fonoviy,
+#                 "ГотовыйКонтент": element.gotoviycontent,
+#                 "НевыполненныеЗадачи": element.nevypolnennyezadachi,
+#                 "СтрокаБрендов": element.strokabrendov,
+#                 "Контрагент": element.kontragent,
+#                 "Бренд": element.brand,
+#                 "ОПФ": element.opf,
+#                 "Номенклатура": element.nomenklatura,
+#                 "Пример": element.primer,
+#                 "ДатаСтарта": element.datastarta, 
+#             }
+#             temp_list.append(values)
         
-    res = {
-        'СтрокаТЧ': temp_list
-    }
-    return res
+#     res = {
+#         'СтрокаТЧ': temp_list
+#     }
+#     return res
