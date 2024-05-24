@@ -169,6 +169,7 @@ async def get_nomenclature_placing_for_user(
 async def load_content_web(
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None),
+    request: Request = None
     # page: int = Query(ge=0, default=0),
     # size: int = Query(ge=1, le=100)
 ):
@@ -178,7 +179,7 @@ async def load_content_web(
         #raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents = crud.get_content_web_for_user(db = db, token = token) 
+        contents = crud.get_content_web_for_user(db = db, token = token, search = request.search) 
                                                 #  page = page, size = size)
 
     temp_list = []

@@ -1,6 +1,7 @@
-from sqlalchemy import select, orm
+from sqlalchemy import select, orm, or_
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from fastapi_filter import FilterDepends
 
 from . import models, schemas
 
@@ -68,7 +69,7 @@ def get_content_web(db: Session) -> models.ContentWeb:
     return response
 
 
-def get_content_web_for_user(db: Session, token: str,) -> models.ContentWeb: 
+def get_content_web_for_user(db: Session, token: str, search: str) -> models.ContentWeb: 
                              #page: int, size: int,) -> models.ContentWeb:
     """
     Метод получения контента по пользователю.
@@ -81,7 +82,18 @@ def get_content_web_for_user(db: Session, token: str,) -> models.ContentWeb:
 
     if user.is_employee:
 
-        response = db.query(models.ContentWeb).all()
+        if search == "":
+
+            response = db.query(models.ContentWeb).all()
+
+        else:
+
+            response = db.query(models.ContentWeb).filter(or_
+                                                            (models.ContentWeb.naimenovanie.like(search), 
+                                                            models.ContentWeb.contentkod.like(search), 
+                                                            models.ContentWeb.brands.like(search),
+                                                            models.ContentWeb.contragents.like(search),
+                                                            models.ContentWeb.contact_persons.like(search)))
 
         return response#[offset_min: offset_max]
     
@@ -90,10 +102,19 @@ def get_content_web_for_user(db: Session, token: str,) -> models.ContentWeb:
         contragents = get_contragent_by_user(db=db, user=user)
         try:
             response = db.query(models.ContentWeb).filter(
-                models.ContentWeb.contragents.any(
-                    link=contragents[0].link
-             )
-         )
+                    models.ContentWeb.contragents.any(
+                        link=contragents[0].link
+                )
+            )
+                
+            if search != "":
+
+                response = response.filter(or_
+                                                            (models.ContentWeb.naimenovanie.like(search), 
+                                                            models.ContentWeb.contentkod.like(search), 
+                                                            models.ContentWeb.brands.like(search),
+                                                            models.ContentWeb.contragents.like(search),
+                                                            models.ContentWeb.contact_persons.like(search)))
             return response#[offset_min: offset_max]
         except:
             return None
