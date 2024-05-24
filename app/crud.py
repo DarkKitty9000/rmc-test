@@ -63,7 +63,8 @@ def get_content_web(db: Session) -> models.ContentWeb:
     return response
 
 
-def get_content_web_for_user(db: Session, token: str, page: int, size: int,) -> models.ContentWeb:
+def get_content_web_for_user(db: Session, token: str,) -> models.ContentWeb: 
+                             #page: int, size: int,) -> models.ContentWeb:
     """
     Метод получения контента по пользователю.
     *** в разработке
