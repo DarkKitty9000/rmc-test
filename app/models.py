@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, Integer, String, ARRAY, ForeignKey, \
      CHAR, DateTime, Table, UniqueConstraint, Date
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 # Описание промежуточных таблиц для таблиц со связью многие-ко-многим.
 # -----------------------------------------------------------------------------
@@ -22,20 +22,20 @@ contragent_brand = Table(
 )
 
 
-nomenclature_contragent = Table(
-    'nomenclature_contragent',
-    Base.metadata,
-    Column(
-        'nomenclature_link',
-        ForeignKey('nomenclature_placing.link'),
-        primary_key=True
-    ),
-    Column(
-        'contragent_link',
-        ForeignKey('contragent.link'),
-        primary_key=True
-    )
-)
+# nomenclature_contragent = Table(
+#     'nomenclature_contragent',
+#     Base.metadata,
+#     Column(
+#         'nomenclature_link',
+#         ForeignKey('nomenclature_placing.link'),
+#         primary_key=True
+#     ),
+#     Column(
+#         'contragent_link',
+#         ForeignKey('contragent.link'),
+#         primary_key=True
+#     )
+# )
 
 
 content_brand = Table(
@@ -70,20 +70,20 @@ content_contragent = Table(
 )
 
 
-# content_nomenclature = Table(
-#     'content_contragent',
-#     Base.metadata,
-#     Column(
-#         'content_link',
-#         ForeignKey('content.link'),
-#         primary_key=True
-#     ),
-#     Column(
-#         'contragent_link',
-#         ForeignKey('contagent.link'),
-#         primary_key=True
-#     )
-# )
+content_nomenclature = Table(
+    'content_nomenclature',
+    Base.metadata,
+    Column(
+        'content_link',
+        ForeignKey('content_web.link'),
+        primary_key=True
+    ),
+    Column(
+        'nomenclature_link',
+        ForeignKey('nomenclature_placing.link'),
+        primary_key=True
+    )
+)
 
 # Описание основных таблиц базы данных
 # -----------------------------------------------------------------------------
@@ -180,8 +180,8 @@ class NomenclaturePlacing(Base):
     
     contragents = relationship(
         "Contragent",
-        secondary=nomenclature_contragent,
-        back_populates="nomenclatures"
+        secondary = 'nomenclature_contragent',
+        back_populates ="nomenclatures"
     )
     contents = relationship(
         "ContentWeb",
@@ -222,8 +222,8 @@ class ContentWeb(Base):
 
     brands = relationship(
         "Brand",
-        secondary=content_brand,
-        back_populates="contents"
+        secondary = content_brand,
+        back_populates = "contents"
     )
     contact_persons = relationship(
         "ContactPerson",
@@ -231,12 +231,12 @@ class ContentWeb(Base):
     )
     contragents = relationship(
         "Contragent",
-        secondary=content_contragent,
-        back_populates="contents"
+        secondary = content_contragent,
+        back_populates = "contents"
     )
     nomenclatures = relationship(
         "NomenclaturePlacing",
-        back_populates="contents"
+        back_populates = "contents"
     )
 
 
@@ -254,23 +254,23 @@ class Contragent(Base):
 
     nomenclatures = relationship(
         "NomenclaturePlacing",
-        secondary=nomenclature_contragent,
-        back_populates="contragents"
+        secondary = 'nomenclature_contragent',
+        back_populates = "contragents"
     )
     brands = relationship(
         "Brand",
-        secondary=contragent_brand,
-        back_populates="contragents"
+        secondary = contragent_brand,
+        back_populates = "contragents"
     )
     contact_persons = relationship(
         "ContactPerson",
-        secondary=contragent_cp,
+        secondary= contragent_cp,
         back_populates="contragents"
     )
     contents = relationship(
         "ContentWeb",
-        secondary=content_contragent,
-        back_populates="contragents"
+        secondary = content_contragent,
+        back_populates = "contragents"
     )
 
 
@@ -282,13 +282,13 @@ class Brand(Base):
 
     contragents = relationship(
         "Contragent",
-        secondary=contragent_brand,
-        back_populates="brands"
+        secondary = contragent_brand,
+        back_populates = "brands"
     )
     contents = relationship(
         "ContentWeb",
-        secondary=content_brand,
-        back_populates="brands"
+        secondary = content_brand,
+        back_populates = "brands"
     )
 
 
@@ -302,8 +302,8 @@ class ContactPerson(Base):
 
     contragents = relationship(
         "Contragent",
-        secondary=contragent_cp,
-        back_populates="contact_persons"
+        secondary = contragent_cp,
+        back_populates = "contact_persons"
     )
     cp_info = relationship(
         "CPInfo",
@@ -335,3 +335,38 @@ class CPInfo(Base):
 
     contact_persons = relationship("ContactPerson", back_populates="cp_info")
     ci_types = relationship("CITypes", back_populates="cp_info")
+
+# Промежуточная таблица номенклатура - контрагент
+class nomenclature_contragent (Base):
+    __tablename__ = "nomenclature_contragent"
+
+    nomenclature_link = Column(String, ForeignKey('nomenclature_placing.link'), primary_key=True)
+    contragent_link = Column(String, ForeignKey('contragent.link'), primary_key=True)
+
+# Промежуточная таблица контрагент - бренд
+# class contragent_brand (Base):
+#     __tablename__ ='contragent_brand'
+    
+#     contragent_link = Column(String, ForeignKey('contragent.link'), primary_key=True)
+#     brand_link = Column(String, ForeignKey('brand.link'), primary_key=True)
+
+# # Промежуточная таблица контент - бренд
+# class content_brand (Base):
+#     __tablename__ = 'content_brand'
+
+#     content_link = Column(String, ForeignKey('content_web.link'), primary_key=True)
+#     brand_link = Column(String, ForeignKey('brand.link'), primary_key=True)
+
+# # Промежуточная таблица контент - контрагент
+# class content_contragent (Base):
+#     __tablename__ = 'content_contragent'
+    
+#     content_link = Column(String, ForeignKey('content_web.link'), primary_key=True)
+#     contragent_link = Column(String, ForeignKey('contragent.link'), primary_key=True)
+
+# class contragent_cp(Base):
+#     __tablename__ = 'contragent_cp'
+
+#     contragent_link = Column(String, ForeignKey('contragent.link'), primary_key=True)
+#     cp_link = Column(String, ForeignKey('contact_person.link'), primary_key=True)
+

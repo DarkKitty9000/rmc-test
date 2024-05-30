@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from fastapi_filter import FilterDepends
 
-from . import models, schemas
+import models, schemas
 
 
 # Метод для получения мест размещения номенклатуры
@@ -50,33 +50,32 @@ def get_nomenclature_placing_from_db_for_user(
     # Получаем всех контрагентов по пользователю.
         contragents = get_contragent_by_user(db=db, user=user)
         try:
-            response = db.query(models.NomenclaturePlacing).filter(
-                models.NomenclaturePlacing.contragents.any(
-                    link=contragents[0].link
-                )   
-            )
+            response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
+                    models.nomenclature_contragent.contragent_link.in_(contragents)    
+                ).all()
             return response#[offset_min: offset_max]
-        except:
+        except Exception as e:
+            print(f"Error occurred: {e}")
             return None
     
 
 def get_content_web(db: Session) -> models.ContentWeb:
     """
-    Метод получения контента
+    Метод получения примеров контента
     *** в разработке
     """
     response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
     return response
 
 
-def get_content_web_for_user(db: Session, token: str, search: str) -> models.ContentWeb: 
-                             #page: int, size: int,) -> models.ContentWeb:
+def get_content_web_for_user(db: Session, token: str, search: str, page: int, size: int) -> models.ContentWeb: 
+                             #,) -> models.ContentWeb:
     """
     Метод получения контента по пользователю.
     *** в разработке
     """
-    # offset_min = page * size
-    # offset_max = (page + 1) * size
+    offset_min = page * size
+    offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
 
@@ -88,35 +87,39 @@ def get_content_web_for_user(db: Session, token: str, search: str) -> models.Con
 
         else:
 
-            response = db.query(models.ContentWeb).filter(or_
-                                                            (models.ContentWeb.naimenovanie.like(search), 
-                                                            models.ContentWeb.contentkod.like(search), 
-                                                            models.ContentWeb.brands.like(search),
-                                                            models.ContentWeb.contragents.like(search),
-                                                            models.ContentWeb.contact_persons.like(search)))
+           response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter=True).join(models.ContentWeb.contragents, isouter=True).\
+            join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{search}%'))|
+                                                                        (models.ContentWeb.contentkod.like(f'%{search}%'))|
+                                                                        (models.Contragent.full_name.like(f'%{search}%'))|
+                                                                        (models.ContactPerson.full_name.like(f'%{search}%'))|
+                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
 
-        return response#[offset_min: offset_max]
+        return response[offset_min: offset_max]
     
     else:
     # Получаем всех контрагентов по пользователю.
         contragents = get_contragent_by_user(db=db, user=user)
         try:
-            response = db.query(models.ContentWeb).filter(
-                    models.ContentWeb.contragents.any(
-                        link=contragents[0].link
+            response = db.query(models.ContentWeb).join(models.ContentWeb.brands,isouter=True).join(models.ContentWeb.contragents,isouter=True).\
+                join(models.ContentWeb.contact_persons,isouter=True).filter(
+                    models.Contragent.link.in_(contragents)    
                 )
-            )
                 
             if search != "":
 
-                response = response.filter(or_
-                                                            (models.ContentWeb.naimenovanie.like(search), 
-                                                            models.ContentWeb.contentkod.like(search), 
-                                                            models.ContentWeb.brands.like(search),
-                                                            models.ContentWeb.contragents.like(search),
-                                                            models.ContentWeb.contact_persons.like(search)))
-            return response#[offset_min: offset_max]
-        except:
+                response = response.filter((models.Brand.full_name.like(f'%{search}%'))|
+                                            (models.ContentWeb.contentkod.like(f'%{search}%'))|
+                                            (models.Contragent.full_name.like(f'%{search}%'))|
+                                            (models.ContactPerson.full_name.like(f'%{search}%'))|
+                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
+                
+            else:
+
+                response = response.all()
+
+            return response[offset_min: offset_max]
+        except Exception as e:
+            print(f"Error occurred: in get_content {e}")
             return None
     
 
@@ -146,6 +149,6 @@ def get_contragent_by_user(db: Session, user: models.User):
     user - Объект пользователя.
     """
     contragents = db.query(models.Contragent).filter(
-        models.Contragent.contact_persons.any(link=user.link)
+        models.Contragent.contact_persons.any(link = user.link)
     ).all()
-    return contragents
+    return [contragent.link for contragent in contragents]
