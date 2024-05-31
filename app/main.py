@@ -153,6 +153,16 @@ async def load_content_web(
     temp_list = []
     if contents is not None:        
         for element in contents:
+
+            contragent = ""
+            brand = ""
+
+            if len(element.contragents) != 0:
+                contragent = element.contragents[0].full_name
+
+            if len(element.brands) != 0:
+                brand = element.brands[0].full_name
+
             values = { 
                 "Наименование": element.naimenovanie,
                 "КонтентКод": element.contentkod,
@@ -174,8 +184,8 @@ async def load_content_web(
                 "ГотовыйКонтент": element.gotoviycontent,
                 "НевыполненныеЗадачи": element.nevypolnennyezadachi,
                 "СтрокаБрендов": element.logo,
-                "Контрагент": element.contragents,
-                "Бренд": element.brands,
+                "Контрагент": contragent, # строкой
+                "Бренд": brand,    #  строкой
                 "ОПФ": element.opf,
                 "Номенклатура": element.nomenklatura,
                 "Пример": element.primer,
@@ -185,8 +195,8 @@ async def load_content_web(
         
     res = {
         
-        "ДобавитьновыйКонтент": False,        
-        "ОбщееКоличество": 1000,
+        "ДобавитьновыйКонтент": True,        
+        "ОбщееКоличество": 100,
         'СтрокаТЧ': temp_list
     }
     return res
