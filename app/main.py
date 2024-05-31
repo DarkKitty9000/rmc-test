@@ -137,7 +137,7 @@ async def load_content_web(
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None),
     page: int = Query(ge=0, default=0),
-    size: int = Query(ge=1, le=1000)
+    size: int = Query(ge=1, le=8000)
 ):
     token = xrmccookie
     data = await request.json()
