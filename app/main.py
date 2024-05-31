@@ -136,8 +136,8 @@ async def load_content_web(
     request: Request,
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None),
-    #page: int = Query(ge=0, default=0),
-    #size: int = Query(ge=1, le=1000)
+    page: int = Query(ge=0, default=0),
+    size: int = Query(ge=1, le=1000)
 ):
     token = xrmccookie
     data = await request.json()
@@ -147,7 +147,7 @@ async def load_content_web(
         raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents = crud.get_content_web_for_user(db = db, token = token, search = data["СтрокаПоиска"]) #page = page, size = size) 
+        contents = crud.get_content_web_for_user(db = db, token = token, search = data["СтрокаПоиска"], page = page, size = size) 
                                                 
 
     temp_list = []
