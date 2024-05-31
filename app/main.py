@@ -154,8 +154,6 @@ async def load_content_web(
     if contents is not None:        
         for element in contents:
             values = { 
-                "ДобавитьновыйКонтент": False,
-                "ОбщееКоличество": 1000,
                 "Наименование": element.naimenovanie,
                 "КонтентКод": element.contentkod,
                 "ДатаСоздания": element.datasozdaniya,
@@ -186,6 +184,9 @@ async def load_content_web(
             temp_list.append(values)
         
     res = {
+        
+        "ДобавитьновыйКонтент": False,        
+        "ОбщееКоличество": 1000,
         'СтрокаТЧ': temp_list
     }
     return res
