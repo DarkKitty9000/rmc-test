@@ -68,14 +68,14 @@ def get_content_web(db: Session) -> models.ContentWeb:
     return response
 
 
-def get_content_web_for_user(db: Session, token: str, search: str, page: int, size: int) -> models.ContentWeb: 
-                             #,) -> models.ContentWeb:
+def get_content_web_for_user(db: Session, token: str, search: str) -> models.ContentWeb: 
+                             #, page: int, size: int) -> models.ContentWeb:
     """
     Метод получения контента по пользователю.
     *** в разработке
     """
-    offset_min = page * size
-    offset_max = (page + 1) * size
+    # offset_min = page * size
+    # offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
 
@@ -94,7 +94,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                         (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
 
-        return response[offset_min: offset_max]
+        return response #[offset_min: offset_max]
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -117,7 +117,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
                 response = response.all()
 
-            return response[offset_min: offset_max]
+            return response #[offset_min: offset_max]
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
             return None
