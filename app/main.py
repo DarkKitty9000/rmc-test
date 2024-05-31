@@ -156,6 +156,7 @@ async def load_content_web(
 
             contragent = ""
             brand = ""
+            KLCode = ""
 
             if len(element.contragents) != 0:
                 contragent = element.contragents[0].full_name
@@ -163,13 +164,16 @@ async def load_content_web(
             if len(element.brands) != 0:
                 brand = element.brands[0].full_name
 
+            if element.cp_link != None:
+                KLCode = element.cp_link
+
             values = { 
                 "Наименование": element.naimenovanie,
                 "КонтентКод": element.contentkod,
                 "ДатаСоздания": element.datasozdaniya,
-                "Текущий": element.tekuschiy,
-                "Прошедший": element.proshedshiy,
-                "Будущий": element.buduschiy,
+                "Текущий": element.tekuschiy, # Определять на новом сервере
+                "Прошедший": element.proshedshiy, # Определять на новом сервере
+                "Будущий": element.buduschiy, # Определять на новом сервере
                 "БезМП": element.bezmp,
                 "КоличествоСценариев": element.kolichestvoscenariev,
                 "СценарийКод": element.scenariykod,
@@ -179,7 +183,7 @@ async def load_content_web(
                 "НаСервере": element.naservere,
                 "ДатаОкончания": element.dataokonchaniya,
                 "КЛ": element.kl,
-                "КЛКод": element.cp_link,
+                "КЛКод": KLCode,
                 "Фоновый": element.fonoviy,
                 "ГотовыйКонтент": element.gotoviycontent,
                 "НевыполненныеЗадачи": element.nevypolnennyezadachi,
