@@ -154,6 +154,8 @@ async def load_content_web(
     if contents is not None:        
         for element in contents:
             values = { 
+                "ДобавитьновыйКонтент": False,
+                "ОбщееКоличество": 1000,
                 "Наименование": element.naimenovanie,
                 "КонтентКод": element.contentkod,
                 "ДатаСоздания": element.datasozdaniya,

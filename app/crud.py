@@ -87,8 +87,8 @@ def get_content_web_for_user(db: Session, token: str, search: str) -> models.Con
 
         else:
 
-           response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter=True).join(models.ContentWeb.contragents, isouter=True).\
-            join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{search}%'))|
+            response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter=True).join(models.ContentWeb.contragents, isouter=True).\
+                join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{search}%'))|
                                                                         (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                                                         (models.Contragent.full_name.like(f'%{search}%'))|
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
