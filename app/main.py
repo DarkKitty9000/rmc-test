@@ -139,13 +139,13 @@ async def load_content_web(
 ):
     token = xrmccookie
     data = await request.json()
-    print(data["СтрокаПоиска"])
+    print(data["search"])
     if token is None or token == "":
         contents = crud.get_content_web(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents = crud.get_content_web_for_user(db = db, token = token, search = data["СтрокаПоиска"], page = page, size = size) 
+        contents = crud.get_content_web_for_user(db = db, token = token, search = data["search"], page = page, size = size) 
                                                 
 
     temp_list = []
