@@ -166,32 +166,32 @@ async def load_content_web(
                 KLCode = element.cp_link
 
             values = { 
-                "name": element.naimenovanie,
-                "code": element.contentkod,
-                "creationDate": element.datasozdaniya,
-                "current": element.tekuschiy, # Определять на новом сервере
-                "past": element.proshedshiy, # Определять на новом сервере
-                "future": element.buduschiy, # Определять на новом сервере
-                "withoutMP": element.bezmp,
-                "scriptCount": element.kolichestvoscenariev,
-                "scriptCode": element.scenariykod,
-                "script": element.scenariy,
-                "responsible": element.otvetstvenniy,
-                "fileExtension": element.rasshireniefailacontenta,
-                "onServer": element.naservere,
-                "endDate": element.dataokonchaniya,
-                "cl": element.kl,
-                "clCode": KLCode,
-                "type": element.fonoviy,
-                "readyContent": element.gotoviycontent,
-                "haveNotDoneTasks": element.nevypolnennyezadachi,
-                "brandsRow": element.logo,
-                "counterparty": contragent, # строкой
-                "brand": brand,    #  строкой
-                "opf": element.opf,
-                "nomenclatureS": element.nomenklatura,
-                "example": element.primer,
-                "startDate": element.datastarta, 
+                "Наименование": element.naimenovanie,
+                "КонтентКод": element.contentkod,
+                "ДатаСоздания": element.datasozdaniya,
+                "Текущий": element.tekuschiy, # Определять на новом сервере
+                "Прошедший": element.proshedshiy, # Определять на новом сервере
+                "Будущий": element.buduschiy, # Определять на новом сервере
+                "БезМП": element.bezmp,
+                "КоличествоСценариев": element.kolichestvoscenariev,
+                "СценарийКод": element.scenariykod,
+                "Сценарий": element.scenariy,
+                "Ответственный": element.otvetstvenniy,
+                "РасширениеФайлаКонтента": element.rasshireniefailacontenta,
+                "НаСервере": element.naservere,
+                "ДатаОкончания": element.dataokonchaniya,
+                "КЛ": element.kl,
+                "КЛКод": KLCode,
+                "Фоновый": element.fonoviy,
+                "ГотовыйКонтент": element.gotoviycontent,
+                "НевыполненныеЗадачи": element.nevypolnennyezadachi,
+                "СтрокаБрендов": element.logo,
+                "Контрагент": contragent, # строкой
+                "Бренд": brand,    #  строкой
+                "ОПФ": element.opf,
+                "Номенклатура": element.nomenklatura,
+                "Пример": element.primer,
+                "ДатаСтарта": element.datastarta, 
             }
             temp_list.append(values)
         
