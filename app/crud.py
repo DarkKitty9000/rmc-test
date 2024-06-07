@@ -94,7 +94,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                         (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
 
-        return response[offset_min: offset_max]
+        return response #[offset_min: offset_max]
     
     else:
     # Получаем всех контрагентов по пользователю.
