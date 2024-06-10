@@ -145,7 +145,7 @@ async def load_content_web(
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents = crud.get_content_web_for_user(db = db, token = token, search = data["search"], page = page, size = size) 
+        contents, count = crud.get_content_web_for_user(db = db, token = token, search = data["search"], page = page, size = size) 
                                                 
 
     temp_list = []
@@ -197,7 +197,7 @@ async def load_content_web(
         
     res = {
                
-        "ОбщееКоличество": 100,
+        "ОбщееКоличество": count,
         'СтрокаТЧ': temp_list
     }
     return res

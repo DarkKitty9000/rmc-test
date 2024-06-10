@@ -93,8 +93,9 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.Contragent.full_name.like(f'%{search}%'))|
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                         (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
-
-        return response[offset_min: offset_max]
+        count = len(response)
+        
+        return response[offset_min: offset_max], count
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -117,7 +118,9 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
                 response = response.all()
 
-            return response[offset_min: offset_max]
+            count = len(response)
+
+            return response[offset_min: offset_max], count
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
             return None
