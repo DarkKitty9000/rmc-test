@@ -196,8 +196,7 @@ async def load_content_web(
             temp_list.append(values)
         
     res = {
-        
-        "ДобавитьновыйКонтент": True,        
+               
         "ОбщееКоличество": 100,
         'СтрокаТЧ': temp_list
     }
