@@ -83,7 +83,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         if search == "":
 
-            response = db.query(models.ContentWeb).all()
+            response = db.query(models.ContentWeb).limit(size).offset((page) * size).all()
 
         else:
 
@@ -95,7 +95,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
         count = len(response)
         
-        return response[offset_min: offset_max], count
+        return response, count #[offset_min: offset_max], count
     
     else:
     # Получаем всех контрагентов по пользователю.
