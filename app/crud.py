@@ -83,7 +83,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         if search == "":
 
-            response = db.query(models.ContentWeb).limit(1000).all()     #offset((page) * size).all()
+            response = db.query(models.ContentWeb).limit(size).offset((page) * size).all()
 
         else:
 
@@ -92,7 +92,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                                                         (models.Contragent.full_name.like(f'%{search}%'))|
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
+                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).limit(size).offset((page) * size).all()
         count = len(response)
         
         return response, count #[offset_min: offset_max], count
@@ -112,15 +112,15 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                             (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                             (models.Contragent.full_name.like(f'%{search}%'))|
                                             (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).all()
+                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).limit(size).offset((page) * size).all()
                 
             else:
 
-                response = response.all()
+                response = response.limit(size).offset((page) * size).all()
 
             count = len(response)
 
-            return response[offset_min: offset_max], count
+            return response, count#[offset_min: offset_max], count
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
             return None
