@@ -83,7 +83,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         if search == "":
 
-            response = db.query(models.ContentWeb).limit(size).offset((page) * size).all()
+            response = db.query(models.ContentWeb).limit(1000).all()     #offset((page) * size).all()
 
         else:
 
