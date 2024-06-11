@@ -8,9 +8,9 @@ import models, schemas
 
 # Метод для получения мест размещения номенклатуры
 def get_nomenclature_placing_from_db(
-        db: Session
-        # page: int,
-        # size: int,
+        db: Session,
+        page: int,
+        size: int
     ):
     """
     Метод для получения мест размещения номенклатуры
@@ -18,17 +18,15 @@ def get_nomenclature_placing_from_db(
     page - Индекс страницы для пагинации,
     size - Размер страницы для пагинации.
     """
-    # offset_min = page * size
-    # offset_max = (page + 1) * size
-    response = db.query(models.NomenclaturePlacing).all()
+    response = db.query(models.NomenclaturePlacing).limit(size).offset((page) * size).all()
     return response #[offset_min: offset_max]
 
 
 def get_nomenclature_placing_from_db_for_user(
         db: Session,
         token: str,
-        # page: int,
-        # size: int,
+        page: int,
+        size: int,
     ):
     """
     Метод для получения мест размещения номенклатуры по пользователю
@@ -37,8 +35,6 @@ def get_nomenclature_placing_from_db_for_user(
     page - Индекс страницы для пагинации,
     size - Размер страницы для пагинации.
     """
-    # offset_min = page * size
-    # offset_max = (page + 1) * size
 
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
 
@@ -52,7 +48,7 @@ def get_nomenclature_placing_from_db_for_user(
         try:
             response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
                     models.nomenclature_contragent.contragent_link.in_(contragents)    
-                ).all()
+                ).limit(size).offset((page) * size).all()
             return response#[offset_min: offset_max]
         except Exception as e:
             print(f"Error occurred: {e}")
@@ -69,14 +65,11 @@ def get_content_web(db: Session) -> models.ContentWeb:
 
 
 def get_content_web_for_user(db: Session, token: str, search: str, page: int, size: int) -> models.ContentWeb: 
-                             #, page: int, size: int) -> models.ContentWeb:
+                             
     """
     Метод получения контента по пользователю.
     *** в разработке
     """
-    offset_min = page * size
-    offset_max = (page + 1) * size
-
     user = get_user_by_token(db=db, token=token) # Получаем пользователя
 
     if user.is_employee:

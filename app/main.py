@@ -47,30 +47,30 @@ def get_db():
 async def get_nomenclature_placing(
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None),
-    # page: int = Query(ge=0, default=0),
-    # size: int = Query(ge=1, le=100)
+    page: int = Query(ge=0, default=0),
+    size: int = Query(ge=1, le=1000)
 ): 
     token = xrmccookie
     if token != "" and token is not None:
         users_nomenclature = crud.get_nomenclature_placing_from_db_for_user(
             db=db,
             token=token,
-            # page=page,
-            # size=size
+            page=page,
+            size=size
         )
 
         owner_links = [object_nomenclature for object_nomenclature in users_nomenclature]
 
         nomenclatures = crud.get_nomenclature_placing_from_db(
             db=db,
-            # page=page,
-            # size=size
+            page=page,
+            size=size
         )
     else:
         nomenclatures = crud.get_nomenclature_placing_from_db(
             db=db,
-            # page=page,
-            # size=size
+            page=page,
+            size=size
         )
     
     temp_list = []
