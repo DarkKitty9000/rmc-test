@@ -41,6 +41,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+# Обработка OPTIONS запросов
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return {"Allow": "GET, POST, OPTIONS"}
         
 
 # Метод получения всех возможных мест размещения номенклатуры
