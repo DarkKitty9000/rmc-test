@@ -218,7 +218,6 @@ class ContentWeb(Base):
     scenariykod = Column(String)
     tekuschiy = Column(Boolean)
     fonoviy = Column(Boolean)
-    nomenclature_link = Column(String, ForeignKey("nomenclature_placing.link"))
 
     brands = relationship(
         "Brand",
