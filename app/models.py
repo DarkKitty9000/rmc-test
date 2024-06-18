@@ -185,6 +185,7 @@ class NomenclaturePlacing(Base):
     )
     contents = relationship(
         "ContentWeb",
+        secondary = 'content_nomenclature',
         back_populates="nomenclatures"
     )
 
@@ -235,6 +236,7 @@ class ContentWeb(Base):
     )
     nomenclatures = relationship(
         "NomenclaturePlacing",
+        secondary = 'content_nomenclature',
         back_populates = "contents"
     )
 

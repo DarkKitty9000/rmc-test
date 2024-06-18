@@ -135,7 +135,7 @@ def get_user_by_token(db: Session, token: str):
         ).first()
         return user
     except:
-        raise HTTPException(status_code=404, detail="Пользователь не найден.")
+         raise HTTPException(status_code=404, detail="Пользователь не найден.")
 
 
 def get_contragent_by_user(db: Session, user: models.User):
