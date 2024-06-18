@@ -40,7 +40,7 @@ def get_nomenclature_placing_from_db_for_user(
 
     if user.is_employee:
         response = db.query(models.NomenclaturePlacing).all()
-        return response #[offset_min: offset_max]
+        return response 
 
     else:
     # Получаем всех контрагентов по пользователю.
@@ -49,7 +49,7 @@ def get_nomenclature_placing_from_db_for_user(
             response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
                     models.nomenclature_contragent.contragent_link.in_(contragents)    
                 ).limit(size).offset((page) * size).all()
-            return response#[offset_min: offset_max]
+            return response
         except Exception as e:
             print(f"Error occurred: {e}")
             return None
@@ -88,7 +88,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContentWeb.naimenovanie.like(f'%{search}%'))).limit(size).offset((page) * size).all()
         count = len(response)
         
-        return response, count #[offset_min: offset_max], count
+        return response, count 
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -113,7 +113,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
             count = len(response)
 
-            return response, count#[offset_min: offset_max], count
+            return response, count
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
             return None
