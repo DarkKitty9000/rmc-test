@@ -76,7 +76,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         if search == "":
 
-            response = db.query(models.ContentWeb).limit(size).order_by(models.ContentWeb.datasozdaniya.desc()).offset((page) * size).all()
+            response = db.query(models.ContentWeb).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
 
         else:
 
@@ -109,7 +109,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                 
             else:
 
-                response = response.limit(size).order_by(models.ContentWeb.datasozdaniya.desc()).offset((page) * size).all()
+                response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
 
             count = len(response)
 
