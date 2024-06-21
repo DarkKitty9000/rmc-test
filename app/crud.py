@@ -76,7 +76,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         if search == "":
 
-            response = db.query(models.ContentWeb).limit(size).offset((page) * size).all()
+            response = db.query(models.ContentWeb).limit(size).order_by(models.ContentWeb.datasozdaniya.desc()).offset((page) * size).all()
 
         else:
 
@@ -85,7 +85,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                         (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                                                         (models.Contragent.full_name.like(f'%{search}%'))|
                                                                         (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).limit(size).offset((page) * size).all()
+                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
         count = len(response)
         
         return response, count 
@@ -105,11 +105,11 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                             (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                             (models.Contragent.full_name.like(f'%{search}%'))|
                                             (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).limit(size).offset((page) * size).all()
+                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
                 
             else:
 
-                response = response.limit(size).offset((page) * size).all()
+                response = response.limit(size).order_by(models.ContentWeb.datasozdaniya.desc()).offset((page) * size).all()
 
             count = len(response)
 
