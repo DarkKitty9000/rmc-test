@@ -53,31 +53,23 @@ async def options_handler(path: str):
 @app.post("/LoadNomenclaturePlacing")
 async def get_nomenclature_placing(
     db: Session = Depends(get_db),
-    xrmccookie: str = Header(default = None),
-    page: int = Query(ge=0, default=0),
-    size: int = Query(ge=1, le=1000)
+    xrmccookie: str = Header(default = None)
 ): 
     token = xrmccookie
     if token != "" and token is not None:
         users_nomenclature = crud.get_nomenclature_placing_from_db_for_user(
             db=db,
-            token=token,
-            page=page,
-            size=size
+            token=token
         )
 
         owner_links = [object_nomenclature for object_nomenclature in users_nomenclature]
 
         nomenclatures = crud.get_nomenclature_placing_from_db(
-            db=db,
-            page=page,
-            size=size
+            db=db
         )
     else:
         nomenclatures = crud.get_nomenclature_placing_from_db(
-            db=db,
-            page=page,
-            size=size
+            db=db
         )
     
     temp_list = []

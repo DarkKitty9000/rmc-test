@@ -1,4 +1,4 @@
-from sqlalchemy import select, orm, or_
+from sqlalchemy import select, orm, or_, func
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from fastapi_filter import FilterDepends
@@ -9,31 +9,25 @@ import models, schemas
 # Метод для получения мест размещения номенклатуры
 def get_nomenclature_placing_from_db(
         db: Session,
-        page: int,
-        size: int
+
     ):
     """
     Метод для получения мест размещения номенклатуры
     db - Сессия базы данных,
-    page - Индекс страницы для пагинации,
-    size - Размер страницы для пагинации.
     """
-    response = db.query(models.NomenclaturePlacing).limit(size).offset((page) * size).all()
-    return response #[offset_min: offset_max]
+    response = db.query(models.NomenclaturePlacing).all()
+    return response
 
 
 def get_nomenclature_placing_from_db_for_user(
         db: Session,
         token: str,
-        page: int,
-        size: int,
+
     ):
     """
     Метод для получения мест размещения номенклатуры по пользователю
     db - Сессия базы данных,
-    token - Токен авторизации пользователя,
-    page - Индекс страницы для пагинации,
-    size - Размер страницы для пагинации.
+    token - Токен авторизации пользователя
     """
 
     user = get_user_by_token(db = db, token = token) # Получаем пользователя
@@ -48,7 +42,7 @@ def get_nomenclature_placing_from_db_for_user(
         try:
             response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
                     models.nomenclature_contragent.contragent_link.in_(contragents)    
-                ).limit(size).offset((page) * size).all()
+                ).all()
             return response
         except Exception as e:
             print(f"Error occurred: {e}")
@@ -58,7 +52,6 @@ def get_nomenclature_placing_from_db_for_user(
 def get_content_web(db: Session) -> models.ContentWeb:
     """
     Метод получения примеров контента
-    *** в разработке
     """
     response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
     return response
@@ -68,7 +61,6 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                              
     """
     Метод получения контента по пользователю.
-    *** в разработке
     """
     user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
@@ -86,7 +78,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                 (models.Contragent.full_name.like(f'%{search}%'))|
                                                                 (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                 (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
-        count = len(response)
+        count = db.query(func.count(models.ContentWeb.link)).scalar()
         
         return response, count 
     
@@ -111,7 +103,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
                 response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
 
-            count = len(response)
+            count = db.query(func.count(models.ContentWeb.link)).scalar()
 
             return response, count
         except Exception as e:
