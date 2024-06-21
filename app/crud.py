@@ -36,7 +36,7 @@ def get_nomenclature_placing_from_db_for_user(
     size - Размер страницы для пагинации.
     """
 
-    user = get_user_by_token(db=db, token=token) # Получаем пользователя
+    user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
     if user.is_employee:
         response = db.query(models.NomenclaturePlacing).all()
@@ -44,7 +44,7 @@ def get_nomenclature_placing_from_db_for_user(
 
     else:
     # Получаем всех контрагентов по пользователю.
-        contragents = get_contragent_by_user(db=db, user=user)
+        contragents = get_contragent_by_user(db = db, user = user)
         try:
             response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
                     models.nomenclature_contragent.contragent_link.in_(contragents)    
@@ -70,7 +70,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
     Метод получения контента по пользователю.
     *** в разработке
     """
-    user = get_user_by_token(db=db, token=token) # Получаем пользователя
+    user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
     if user.is_employee:
 
@@ -80,28 +80,28 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
         else:
 
-            response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter=True).join(models.ContentWeb.contragents, isouter=True).\
+            response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter = True).join(models.ContentWeb.contragents, isouter = True).\
                 join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{search}%'))|
-                                                                        (models.ContentWeb.contentkod.like(f'%{search}%'))|
-                                                                        (models.Contragent.full_name.like(f'%{search}%'))|
-                                                                        (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                                                        (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+                                                                (models.ContentWeb.contentkod.like(f'%{search}%'))|
+                                                                (models.Contragent.full_name.like(f'%{search}%'))|
+                                                                (models.ContactPerson.full_name.like(f'%{search}%'))|
+                                                                (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
         count = len(response)
         
         return response, count 
     
     else:
     # Получаем всех контрагентов по пользователю.
-        contragents = get_contragent_by_user(db=db, user=user)
+        contragents = get_contragent_by_user(db = db, user = user)
         try:
-            response = db.query(models.ContentWeb).join(models.ContentWeb.brands,isouter=True).join(models.ContentWeb.contragents,isouter=True).\
+            response = db.query(models.ContentWeb).join(models.ContentWeb.brands,isouter = True).join(models.ContentWeb.contragents,isouter = True).\
                 join(models.ContentWeb.contact_persons,isouter=True).filter(
                     models.Contragent.link.in_(contragents)    
                 )
                 
             if search != "":
 
-                response = response.filter((models.Brand.full_name.like(f'%{search}%'))|
+                 response = response.filter((models.Brand.full_name.like(f'%{search}%'))|
                                             (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                             (models.Contragent.full_name.like(f'%{search}%'))|
                                             (models.ContactPerson.full_name.like(f'%{search}%'))|
@@ -135,7 +135,7 @@ def get_user_by_token(db: Session, token: str):
         ).first()
         return user
     except:
-         raise HTTPException(status_code=404, detail="Пользователь не найден.")
+         raise HTTPException(status_code = 404, detail = "Пользователь не найден.")
 
 
 def get_contragent_by_user(db: Session, user: models.User):
