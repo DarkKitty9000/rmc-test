@@ -71,14 +71,21 @@ async def get_nomenclature_placing(
         nomenclatures = crud.get_nomenclature_placing_from_db(
             db=db
         )
+
+        owner_links = []
     
     temp_list = []
 
     if nomenclatures is not None:        
         for nomenclature in nomenclatures:
 
-            if nomenclature in owner_links:
-                Owner = True
+            if len(owner_links) != 0:
+
+                if nomenclature in owner_links:
+                    Owner = True
+                else:
+                    Owner = False
+
             else:
                 Owner = False    
 
@@ -113,7 +120,7 @@ async def get_nomenclature_placing(
                 "Лого": nomenclature.logo, 
                 "АббревиатураФедОкруг": nomenclature.abbreviaturafedokrug, 
                 "ОператорАремси": nomenclature.operatoraremcy, 
-                "Своя": Owner,
+                "Своя": Owner, #Переделать
                 "ОсновноеКонтактноеЛицоКод": nomenclature.osnovnoekontaktnoelicokod, 
                 "ЭкстерьерМассив": nomenclature.exteriermassiv, 
                 "ТипыНосителей": nomenclature.tipynositeley, 
@@ -140,7 +147,7 @@ async def load_content_web(
     data = await request.json()
     print(data["search"])
     if token is None or token == "":
-        contents = crud.get_content_web(db=db)
+        contents, count = crud.get_content_web(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:

@@ -54,7 +54,8 @@ def get_content_web(db: Session) -> models.ContentWeb:
     Метод получения примеров контента
     """
     response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
-    return response
+    count = db.query(func.count(models.ContentWeb.link)).scalar()
+    return response, count
 
 
 def get_content_web_for_user(db: Session, token: str, search: str, page: int, size: int) -> models.ContentWeb: 
@@ -78,6 +79,7 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                 (models.Contragent.full_name.like(f'%{search}%'))|
                                                                 (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                 (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+        
         count = db.query(func.count(models.ContentWeb.link)).scalar()
         
         return response, count 
