@@ -80,7 +80,8 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                 (models.ContactPerson.full_name.like(f'%{search}%'))|
                                                                 (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
         
-        count = db.query(func.count(models.ContentWeb.link)).scalar()
+        #count = db.query(func.count(models.ContentWeb.link)).scalar()
+        count = len(response)
         
         return response, count 
     
@@ -105,7 +106,8 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
                 response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
 
-            count = db.query(func.count(models.ContentWeb.link)).scalar()
+            #count = db.query(func.count(models.ContentWeb.link)).scalar()
+            count = len(response)   
 
             return response, count
         except Exception as e:
