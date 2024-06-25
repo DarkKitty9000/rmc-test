@@ -67,9 +67,9 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
 
     if user.is_employee:
 
-        if search == "":
+        if search != "":
 
-            response = db.query(models.ContentWeb).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+            response = db.query(models.ContentWeb)
 
         else:
 
@@ -78,10 +78,14 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                                                 (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                                                 (models.Contragent.full_name.like(f'%{search}%'))|
                                                                 (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                                                (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+                                                                (models.ContentWeb.naimenovanie.like(f'%{search}%')))
         
+
+        count = response.count() 
+
+        response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+
         #count = db.query(func.count(models.ContentWeb.link)).scalar()
-        count = len(response)
         
         return response, count 
     
@@ -100,14 +104,15 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
                                             (models.ContentWeb.contentkod.like(f'%{search}%'))|
                                             (models.Contragent.full_name.like(f'%{search}%'))|
                                             (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+                                            (models.ContentWeb.naimenovanie.like(f'%{search}%')))
                 
-            else:
 
-                response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+            count = response.count() 
 
-            #count = db.query(func.count(models.ContentWeb.link)).scalar()
-            count = len(response)   
+            response = response.order_by(models.ContentWeb.datasozdaniya.desc()).limit(size).offset((page) * size).all()
+
+
+            #count = db.query(func.count(models.ContentWeb.link)).scalar()  
 
             return response, count
         except Exception as e:
