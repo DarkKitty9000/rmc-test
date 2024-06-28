@@ -247,7 +247,12 @@ async def get_nomenclature_cv(
                     Owner = False
 
             else:
-                Owner = False    
+                Owner = False 
+
+            cont_person = nomenclature.cp_link
+
+            if cont_person == None:
+                cont_person = ""     
 
             values = { 
                 "Код": nomenclature.link, 
@@ -275,7 +280,7 @@ async def get_nomenclature_cv(
                 "Лого": nomenclature.logo, 
                 "АббревиатураФедОкруг": nomenclature.abbreviatura_fed_okrug, 
                 "Своя": Owner, #Переделать
-                "ОсновноеКонтактноеЛицоКод": nomenclature.cp_link, 
+                "ОсновноеКонтактноеЛицоКод": cont_person, 
                 "ЭкстерьерМассив": nomenclature.exterier_massiv, 
                 "ТипыНосителей": nomenclature.tipy_nositelei, 
                 "НаименованиеФильтрованное": nomenclature.name_filter,
