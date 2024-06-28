@@ -145,7 +145,8 @@ async def load_content_web(
 ):
     token = xrmccookie
     data = await request.json()
-    #print(data["search"])
+    print(data)
+ 
     if token is None or token == "":
         contents, count = crud.get_content_web(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
