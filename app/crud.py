@@ -52,33 +52,60 @@ def get_nomenclature_placing_from_db_for_user(
 def get_content_web(db: Session) -> models.ContentWeb:
     """
     Метод получения примеров контента
+    db - Сессия базы данных,
+    token - Токен авторизации пользователя
+    Вызывается если пользователь не авторизован
     """
     response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
     count = db.query(func.count(models.ContentWeb.link)).scalar()
     return response, count
 
 
-def get_content_web_for_user(db: Session, token: str, search: str, page: int, size: int) -> models.ContentWeb: 
+def get_content_web_for_user(db: Session, token: str, filterData: str, page: int, size: int) -> models.ContentWeb: 
                              
     """
     Метод получения контента по пользователю.
+    db - Сессия базы данных,
+    token - Токен авторизации пользователя
+    filterData - Данные фильтрации в запросе
+    page - отдаваемая страница массива данных
+    size - размерность страницы массива данных
     """
     user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
+    response = db.query(models.ContentWeb)
+
     if user.is_employee:
 
-        if search == "":
+        if filterData["search"] == "":
 
-            response = db.query(models.ContentWeb).order_by(models.ContentWeb.datasozdaniya.desc())
+            or_filters = []
+
+            if filterData["tekuschiy"] == True:
+                or_filters.append(models.ContentWeb.tekuschiy == True)
+
+            if filterData["buduschiy"] == True:
+                or_filters.append(models.ContentWeb.buduschiy == True)
+
+            if filterData["proshedshiy"] == True:
+                or_filters.append(models.ContentWeb.proshedshiy == True)
+
+            if filterData["bezmp"] == True:
+                or_filters.append(models.ContentWeb.bezmp == True)
+
+            if or_filters:
+                response = response.filter(or_(*or_filters))
+            
+            response = response.order_by(models.ContentWeb.datasozdaniya.desc())
 
         else:
 
-            response = db.query(models.ContentWeb).join(models.ContentWeb.brands, isouter = True).join(models.ContentWeb.contragents, isouter = True).\
-                join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{search}%'))|
-                                                                (models.ContentWeb.contentkod.like(f'%{search}%'))|
-                                                                (models.Contragent.full_name.like(f'%{search}%'))|
-                                                                (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                                                (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc())
+            response = response.join(models.ContentWeb.brands, isouter = True).join(models.ContentWeb.contragents, isouter = True).\
+                join(models.ContentWeb.contact_persons, isouter=True).filter((models.Brand.full_name.like(f'%{filterData["search"]}%'))|
+                                                                (models.ContentWeb.contentkod.like(f'%{filterData["search"]}%'))|
+                                                                (models.Contragent.full_name.like(f'%{filterData["search"]}%'))|
+                                                                (models.ContactPerson.full_name.like(f'%{filterData["search"]}%'))|
+                                                                (models.ContentWeb.naimenovanie.like(f'%{filterData["search"]}%'))).order_by(models.ContentWeb.datasozdaniya.desc())
         
         count = response.count()
 
@@ -90,20 +117,37 @@ def get_content_web_for_user(db: Session, token: str, search: str, page: int, si
     # Получаем всех контрагентов по пользователю.
         contragents = get_contragent_by_user(db = db, user = user)
         try:
-            response = db.query(models.ContentWeb).join(models.ContentWeb.brands,isouter = True).join(models.ContentWeb.contragents,isouter = True).\
+            response = response.join(models.ContentWeb.brands,isouter = True).join(models.ContentWeb.contragents,isouter = True).\
                 join(models.ContentWeb.contact_persons,isouter=True).filter(
                     models.Contragent.link.in_(contragents)    
                 )
                 
-            if search != "":
+            if filterData["search"] != "":
 
-                 response = response.filter((models.Brand.full_name.like(f'%{search}%'))|
-                                            (models.ContentWeb.contentkod.like(f'%{search}%'))|
-                                            (models.Contragent.full_name.like(f'%{search}%'))|
-                                            (models.ContactPerson.full_name.like(f'%{search}%'))|
-                                            (models.ContentWeb.naimenovanie.like(f'%{search}%'))).order_by(models.ContentWeb.datasozdaniya.desc())
+                response = response.filter((models.Brand.full_name.like(f'%{filterData["search"]}%'))|
+                                            (models.ContentWeb.contentkod.like(f'%{filterData["search"]}%'))|
+                                            (models.Contragent.full_name.like(f'%{filterData["search"]}%'))|
+                                            (models.ContactPerson.full_name.like(f'%{filterData["search"]}%'))|
+                                            (models.ContentWeb.naimenovanie.like(f'%{filterData["search"]}%'))).order_by(models.ContentWeb.datasozdaniya.desc())
                 
             else:
+
+                or_filters = []
+
+                if filterData["tekuschiy"] == True:
+                    or_filters.append(models.ContentWeb.tekuschiy == True)
+
+                if filterData["buduschiy"] == True:
+                    or_filters.append(models.ContentWeb.buduschiy == True)
+
+                if filterData["proshedshiy"] == True:
+                    or_filters.append(models.ContentWeb.proshedshiy == True)
+
+                if filterData["bezmp"] == True:
+                    or_filters.append(models.ContentWeb.bezmp == True)
+
+                if or_filters:
+                    response = response.filter(or_(*or_filters))
 
                 response = response.order_by(models.ContentWeb.datasozdaniya.desc())
 
@@ -146,3 +190,56 @@ def get_contragent_by_user(db: Session, user: models.User):
         models.Contragent.contact_persons.any(link = user.link)
     ).all()
     return [contragent.link for contragent in contragents]
+
+def get_cp_by_user(db: Session, user: models.User):
+    """
+    Метод получения контрагента по пользователю
+    db - Сессия базы данных,
+    user - Объект пользователя.
+    """
+    cp_links = db.query(models.ContactPerson).filter(
+        models.ContactPerson.link == user.link
+    ).all()
+    return [cp.link for cp in cp_links]
+
+
+def get_nomenclature_cv_from_db(
+        db: Session,
+
+    ):
+    """
+    Метод для получения мест размещения номенклатуры
+    db - Сессия базы данных,
+    """
+    response = db.query(models.NomenclatureCV).all()
+    return response
+
+
+def get_nomenclature_cv_from_db_for_user(
+        db: Session,
+        token: str,
+
+    ):
+    """
+    Метод для получения мест размещения номенклатуры по пользователю
+    db - Сессия базы данных,
+    token - Токен авторизации пользователя
+    """
+
+    user = get_user_by_token(db = db, token = token) # Получаем пользователя
+
+    if user.is_employee:
+        response = db.query(models.NomenclatureCV).all()
+        return response 
+
+    else:
+    # Получаем всех контрагентов по пользователю.
+        cp_links = get_cp_by_user(db = db, user = user)
+        try:
+            response = db.query(models.NomenclatureCV).filter(
+                    models.NomenclatureCV.cp_link.in_(cp_links)    
+                ).all()
+            return response
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return None

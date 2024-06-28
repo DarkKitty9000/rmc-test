@@ -189,6 +189,46 @@ class NomenclaturePlacing(Base):
         back_populates="nomenclatures"
     )
 
+class NomenclatureCV(Base):
+    __tablename__ = "nomenclature_cv"
+
+    link = Column(String, primary_key=True)
+    abbreviatura = Column(String)
+    abbreviatura_fed_okrug = Column(String)
+    article = Column(String)
+    brands_str  = Column(String)
+    gorod  = Column(String)
+    data_poslednei_dostupnosti  = Column(String)
+    dictorskaya_nachitka  = Column(String)
+    dom  = Column(String)
+    dostupnost_nomenclature  = Column(Boolean)
+    zvuk = Column(String)
+    zvukovaya_podlozka  = Column(String)
+    logo  = Column(String)
+    mesto_prodaji  = Column(String)
+    name  = Column(String)
+    name_full  = Column(String)
+    name_filter  = Column(String)
+    operator  = Column(String)
+    raion  = Column(String)
+    region  = Column(String)
+    svoya  = Column(Boolean)
+    statistica = Column(Boolean)
+    tip  = Column(String)
+    tip_contenta  = Column(String)
+    tipy_nositelei  = Column(ARRAY(String))
+    ylica  = Column(String)
+    federalnyi_okrug = Column(String)
+    exterier_massiv = Column(ARRAY(String))
+    cp_link = Column(String, ForeignKey("contact_person.link"))
+    primer = Column(Boolean)
+    
+    contact_persons = relationship(
+        "ContactPerson",
+        back_populates="nomenclature_cv"
+    )
+
+
 
 class ContentWeb(Base):
     __tablename__ = "content_web"
@@ -312,6 +352,10 @@ class ContactPerson(Base):
     )
     contents = relationship(
         "ContentWeb",
+        back_populates="contact_persons"
+    )
+    nomenclature_cv = relationship(
+        "NomenclatureCV",
         back_populates="contact_persons"
     )
 

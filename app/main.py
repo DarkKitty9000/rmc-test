@@ -145,13 +145,13 @@ async def load_content_web(
 ):
     token = xrmccookie
     data = await request.json()
-    print(data["search"])
+    #print(data["search"])
     if token is None or token == "":
         contents, count = crud.get_content_web(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents, count = crud.get_content_web_for_user(db = db, token = token, search = data["search"], page = page, size = size) 
+        contents, count = crud.get_content_web_for_user(db = db, token = token, filterData = data, page = page, size = size) 
                                                 
 
     temp_list = []
@@ -204,6 +204,85 @@ async def load_content_web(
     res = {
                
         "ОбщееКоличество": count,
+        'СтрокаТЧ': temp_list
+    }
+    return res
+
+
+@app.post("/LoadNomenclature")
+async def get_nomenclature_cv(
+    db: Session = Depends(get_db),
+    xrmccookie: str = Header(default = None)
+): 
+    token = xrmccookie
+    if token != "" and token is not None:
+        users_nomenclature = crud.get_nomenclature_cv_from_db_for_user(
+            db=db,
+            token=token
+        )
+
+        owner_links = [object_nomenclature for object_nomenclature in users_nomenclature]
+
+        nomenclatures = crud.get_nomenclature_cv_from_db(
+            db=db
+        )
+    else:
+        nomenclatures = crud.get_nomenclature_cv_from_db(
+            db=db
+        )
+
+        owner_links = []
+    
+    temp_list = []
+
+    if nomenclatures is not None:        
+        for nomenclature in nomenclatures:
+
+            if len(owner_links) != 0:
+
+                if nomenclature in owner_links:
+                    Owner = True
+                else:
+                    Owner = False
+
+            else:
+                Owner = False    
+
+            values = { 
+                "Код": nomenclature.link, 
+                "Бренд": nomenclature.brands_str, 
+                "Наименование": nomenclature.name, 
+                "Артикул": nomenclature.article, 
+                "Город": nomenclature.gorod, 
+                "Дом": nomenclature.dom, 
+                "Регион": nomenclature.region, 
+                "Улица": nomenclature.ylica, 
+                "СтатистикаНоменклатуры": nomenclature.statistica, 
+                "ФедеральныйОкруг": nomenclature.federalnyi_okrug, 
+                "НаименованиеПолное": nomenclature.name_full, 
+                "ДоступностьНоменклатуры": nomenclature.dostupnost_nomenclature, 
+                "МестоПродажи": nomenclature.mesto_prodaji, 
+                "Аббревиатура": nomenclature.abbreviatura, 
+                "ТИП": nomenclature.tip, 
+                "Оператор": nomenclature.operator, 
+                "ТипКонтента": nomenclature.tip_contenta, 
+                "Звук": nomenclature.zvuk, 
+                "ЗвуковаяПодложка": nomenclature.zvukovaya_podlozka, 
+                "ДикторскаяНачитка": nomenclature.dictorskaya_nachitka, 
+                "Район": nomenclature.raion,   
+                "ДатаПоследнейДоступностиТочки": nomenclature.data_poslednei_dostupnosti, 
+                "Лого": nomenclature.logo, 
+                "АббревиатураФедОкруг": nomenclature.abbreviatura_fed_okrug, 
+                "Своя": Owner, #Переделать
+                "ОсновноеКонтактноеЛицоКод": nomenclature.cp_link, 
+                "ЭкстерьерМассив": nomenclature.exterier_massiv, 
+                "ТипыНосителей": nomenclature.tipy_nositelei, 
+                "НаименованиеФильтрованное": nomenclature.name_filter,
+                "Пример": nomenclature.primer 
+            }
+            temp_list.append(values)
+        
+    res = {
         'СтрокаТЧ': temp_list
     }
     return res
