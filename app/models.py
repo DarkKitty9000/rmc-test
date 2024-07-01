@@ -222,6 +222,8 @@ class NomenclatureCV(Base):
     exterier_massiv = Column(ARRAY(String))
     cp_link = Column(String, ForeignKey("contact_person.link"))
     primer = Column(Boolean)
+    kod = Column(String)
+    cp_kod = Column(String)
     
     contact_persons = relationship(
         "ContactPerson",
