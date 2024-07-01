@@ -228,7 +228,7 @@ async def get_nomenclature_cv(
             db=db
         )
     else:
-        nomenclatures = crud.get_nomenclature_cv_from_db(
+        nomenclatures = crud.get_nomenclature_cv_primer(
             db=db
         )
 

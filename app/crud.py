@@ -243,3 +243,14 @@ def get_nomenclature_cv_from_db_for_user(
         except Exception as e:
             print(f"Error occurred: {e}")
             return None
+        
+
+def get_nomenclature_cv_primer(db: Session) -> models.ContentWeb:
+    """
+    Метод получения примеров номенклатуры КВ
+    db - Сессия базы данных,
+    Вызывается если пользователь не авторизован
+    """
+    response = db.query(models.NomenclatureCV).filter(models.NomenclatureCV.primer == True)
+
+    return response
