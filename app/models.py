@@ -21,6 +21,13 @@ contragent_brand = Table(
     Column('brand_link', ForeignKey('brand.link'), primary_key=True)
 )
 
+nomenclature_cv_cp = Table(
+    'nomenclature_cv_cp',
+    Base.metadata,
+    Column('cp_link', ForeignKey('contact_person.link'), primary_key=True),
+    Column('nomenclature_link', ForeignKey('nomenclature_cv.link'), primary_key=True)
+)
+
 
 # nomenclature_contragent = Table(
 #     'nomenclature_contragent',
@@ -227,6 +234,7 @@ class NomenclatureCV(Base):
     
     contact_persons = relationship(
         "ContactPerson",
+        secondary = 'nomenclature_cv_cp',
         back_populates="nomenclature_cv"
     )
 
@@ -358,6 +366,7 @@ class ContactPerson(Base):
     )
     nomenclature_cv = relationship(
         "NomenclatureCV",
+        secondary = 'nomenclature_cv_cp',
         back_populates="contact_persons"
     )
 

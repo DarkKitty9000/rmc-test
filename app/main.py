@@ -291,4 +291,4 @@ async def get_nomenclature_cv(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app=app, host="0.0.0.0")
+    uvicorn.run(app=app, host=" 192.168.0.5", port=8000)

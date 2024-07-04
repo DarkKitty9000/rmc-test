@@ -208,7 +208,7 @@ def get_nomenclature_cv_from_db(
 
     ):
     """
-    Метод для получения мест размещения номенклатуры
+    Метод для получения номенклатуры КВ
     db - Сессия базы данных,
     """
     response = db.query(models.NomenclatureCV).all()
@@ -218,10 +218,9 @@ def get_nomenclature_cv_from_db(
 def get_nomenclature_cv_from_db_for_user(
         db: Session,
         token: str,
-
     ):
     """
-    Метод для получения мест размещения номенклатуры по пользователю
+    Метод для получения номенклатуры КВ по пользователю
     db - Сессия базы данных,
     token - Токен авторизации пользователя
     """
@@ -251,6 +250,5 @@ def get_nomenclature_cv_primer(db: Session) -> models.ContentWeb:
     db - Сессия базы данных,
     Вызывается если пользователь не авторизован
     """
-    response = db.query(models.NomenclatureCV).filter(models.NomenclatureCV.primer == True)
-
+    response = db.query(models.NomenclatureCV).filter(models.NomenclatureCV.primer == True).all()
     return response
