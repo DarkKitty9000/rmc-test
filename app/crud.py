@@ -151,7 +151,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
 
                 response = response.order_by(models.ContentWeb.datasozdaniya.desc())
 
-            count = response(func.count(models.ContentWeb.link))
+            count = response.count()
             
             response = response.limit(size).offset((page) * size).all()
 
