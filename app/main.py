@@ -217,24 +217,20 @@ async def get_nomenclature_cv(
 ): 
     token = xrmccookie
     if token != "" and token is not None:
-        users_nomenclature = crud.get_nomenclature_cv_from_db_for_user(
+        nomenclatures = crud.get_nomenclature_cv_from_db_for_user(
             db=db,
             token=token
         )
 
-        owner_links = [object_nomenclature for object_nomenclature in users_nomenclature]
-
-        nomenclatures = crud.get_nomenclature_cv_from_db(
-            db=db
-        )
     else:
         nomenclatures = crud.get_nomenclature_cv_primer(
             db=db
         )
 
-        owner_links = []
     
     temp_list = []
+
+    owner_links = []
 
     if nomenclatures is not None:        
         for nomenclature in nomenclatures:
@@ -291,4 +287,4 @@ async def get_nomenclature_cv(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app=app, host=" 192.168.0.5", port=8000)
+    uvicorn.run(app=app, host="0.0.0.0", port=8000)

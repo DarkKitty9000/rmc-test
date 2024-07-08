@@ -122,7 +122,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
                     models.Contragent.link.in_(contragents)    
                 )
                 
-            if filterData["search"] != "":
+            if filterData["search"] != '':
 
                 response = response.filter((models.Brand.full_name.like(f'%{filterData["search"]}%'))|
                                             (models.ContentWeb.contentkod.like(f'%{filterData["search"]}%'))|
@@ -151,7 +151,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
 
                 response = response.order_by(models.ContentWeb.datasozdaniya.desc())
 
-            count = response.count()
+            count = response(func.count(models.ContentWeb.link))
             
             response = response.limit(size).offset((page) * size).all()
 
@@ -197,10 +197,10 @@ def get_cp_by_user(db: Session, user: models.User):
     db - Сессия базы данных,
     user - Объект пользователя.
     """
-    cp_links = db.query(models.ContactPerson).filter(
+    cp_link = db.query(models.ContactPerson).filter(
         models.ContactPerson.link == user.link
-    ).all()
-    return [cp.link for cp in cp_links]
+    ).first()
+    return cp_link
 
 
 def get_nomenclature_cv_from_db(
@@ -232,11 +232,11 @@ def get_nomenclature_cv_from_db_for_user(
         return response 
 
     else:
-    # Получаем всех контрагентов по пользователю.
-        cp_links = get_cp_by_user(db = db, user = user)
+    # Получаем всю номенклатуру по пользователю.
+        cp_link = get_cp_by_user(db = db, user = user)
         try:
             response = db.query(models.NomenclatureCV).filter(
-                    models.NomenclatureCV.cp_link.in_(cp_links)    
+                    models.NomenclatureCV.contact_persons.any(link = cp_link.link)    
                 ).all()
             return response
         except Exception as e:
