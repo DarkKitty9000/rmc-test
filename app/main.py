@@ -221,12 +221,18 @@ async def get_nomenclature_cv(
             db=db,
             token=token
         )
-
-    else:
-        nomenclatures = crud.get_nomenclature_cv_primer(
+        primer = crud.get_nomenclature_cv_primer(
             db=db
         )
 
+        nomenclatures.extend(primer)
+
+    else:
+        nomenclatures = []
+        primer = crud.get_nomenclature_cv_primer(
+            db=db
+        )
+        nomenclatures.extend(primer)
     
     temp_list = []
 
@@ -287,5 +293,5 @@ async def get_nomenclature_cv(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app=app, host="192.168.0.5", port=8000)
+    uvicorn.run(app=app, host="0.0.0.0", port=8000)
 
