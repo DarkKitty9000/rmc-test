@@ -225,7 +225,10 @@ async def get_nomenclature_cv(
             db=db
         )
 
-        nomenclatures.extend(primer)
+        common_elements = [element for element in nomenclatures if element in primer]
+
+        if len(common_elements) == 0:
+            nomenclatures.extend(primer)
 
     else:
         nomenclatures = []
