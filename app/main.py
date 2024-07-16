@@ -133,7 +133,64 @@ async def get_nomenclature_placing(
     }
     return res
 
+@app.post('/LoadContentWebTest')
+async def load_content_web_test(
+    request: Request,
+    db: Session = Depends(get_db),
+    xrmccookie: str = Header(default = None),
+    page: int = Query(ge=0, default=0),
+    size: int = Query(ge=1, le=8000)
+):
+    token = xrmccookie
+    data = await request.json()
+    print(data)
+ 
+    if token is None or token == "":
+        contents, count = crud.get_content_web_test_non_auth(db=db)
+        # raise HTTPException(status_code=401, detail="Empty token")
+    
+    else:
+        contents, count = crud.get_content_web_test(db = db, token = token, filterData = data, page = page, size = size) 
+    temp_list = [] 
+    if contents is not None:        
+        for element in contents:
 
+            values = { 
+                "Наименование": element.naimenovanie,
+                "КонтентКод": element.contentkod,
+                "ДатаСоздания": element.datasozdaniya,
+                "Текущий": element.tekuschiy, # Определять на новом сервере
+                "Прошедший": element.proshedshiy, # Определять на новом сервере
+                "Будущий": element.buduschiy, # Определять на новом сервере
+                "БезМП": element.bezmp,
+                "КоличествоСценариев": element.kolichestvoscenariev,
+                "СценарийКод": element.scenariykod,
+                "Сценарий": element.scenariy,
+                "Ответственный": element.otvetstvenniy,
+                "РасширениеФайлаКонтента": element.rasshireniefailacontenta,
+                "НаСервере": element.naservere,
+                "ДатаОкончания": element.dataokonchaniya,
+                "КЛ": element.kl,
+                "КЛКод": element.cp_link,
+                "Фоновый": element.fonoviy,
+                "ГотовыйКонтент": element.gotoviycontent,
+                "НевыполненныеЗадачи": element.nevypolnennyezadachi,
+                "СтрокаБрендов": element.logo,
+                "Контрагент": element.kontragent,
+                "Бренд": element.brand,
+                "ОПФ": element.opf,
+                "Номенклатура": element.nomenklatura,
+                "Пример": element.primer,
+                "ДатаСтарта": element.datastarta, 
+            }
+            temp_list.append(values)
+        
+    res = {
+               
+        "ОбщееКоличество": count,
+        'СтрокаТЧ': temp_list
+    }
+    return res     
 
 @app.post('/LoadContentWeb')
 async def load_content_web(
@@ -293,8 +350,25 @@ async def get_nomenclature_cv(
     }
     return res
 
+@app.post('/GetContentFilters')
+async def load_content_web(
+    request: Request,
+    db: Session = Depends(get_db),
+    xrmccookie: str = Header(default = None)
+):
+    token = xrmccookie
+    data = await request.json()
+ 
+    dataset = crud.get_content_filters(db = db, token = token, data = data)
+        
+                                                
+    res = {
+       "filters": dataset 
+    }
+    return res
+
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app=app, host="192.168.0.5", port=8000)
+    uvicorn.run(app=app, host="127.0.0.1", port=8000)
 

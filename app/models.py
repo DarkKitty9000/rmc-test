@@ -286,10 +286,43 @@ class ContentWeb(Base):
     )
     nomenclatures = relationship(
         "NomenclaturePlacing",
-        secondary = 'content_nomenclature',
+        secondary = content_nomenclature,
         back_populates = "contents"
     )
 
+class ContentWebTest(Base):
+    __tablename__ = "content_web_test"
+
+    link = Column(String, primary_key=True, unique=True)
+    bezmp = Column(Boolean)
+    buduschiy = Column(Boolean)
+    gotoviycontent = Column(Boolean)
+    dataokonchaniya = Column(DateTime(False))
+    datasozdaniya = Column(DateTime(False))
+    datastarta = Column(DateTime(False))
+    kl = Column(String)
+    kolichestvoscenariev = Column(Integer)
+    contentkod = Column(String)
+    kontragent = Column(String)
+    naservere = Column(Boolean)
+    naimenovanie = Column(String)
+    nevypolnennyezadachi = Column(Boolean)
+    nomenklatura = Column(String)
+    opf = Column(String)
+    otvetstvenniy = Column(String)
+    primer = Column(Boolean)
+    proshedshiy = Column(Boolean)
+    rasshireniefailacontenta = Column(String)
+    logo = Column(String)
+    scenariy = Column(String)
+    scenariykod = Column(String)
+    tekuschiy = Column(Boolean)
+    fonoviy = Column(Boolean)
+    brand = Column(String)
+    cp_link = Column(String, ForeignKey("contact_person.link"))
+    brand_list = Column(ARRAY(String))
+    contragent_list = Column(ARRAY(String))
+    nomenclature_list = Column(ARRAY(String))
 
 class Contragent(Base):
     __tablename__ = "contragent"
