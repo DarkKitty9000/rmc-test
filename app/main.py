@@ -370,5 +370,5 @@ async def load_content_web(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app=app, host="127.0.0.1", port=8000) #Основа: 192.168.0.5, тест - 127.0.0.1
+    uvicorn.run(app=app, host="192.168.0.5", port=8000) #Основа: 192.168.0.5, тест - 127.0.0.1
 
