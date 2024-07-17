@@ -121,6 +121,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
         
         count = db.execute(select(func.count()).select_from(subresponse.alias())).scalar()
 
+        print(response)
         unic_list = db.execute(response.limit(size).offset(page * size)).scalars().unique().all()
         
         return unic_list, count 
@@ -306,19 +307,19 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
             or_filters = []
 
-            if filterData["tekuschiy"] == True:
+            if filterData["current"] == True:
                 or_filters.append(models.ContentWebTest.tekuschiy == True)
 
-            if filterData["buduschiy"] == True:
+            if filterData["future"] == True:
                 or_filters.append(models.ContentWebTest.buduschiy == True)
 
-            if filterData["proshedshiy"] == True:
+            if filterData["past"] == True:
                 or_filters.append(models.ContentWebTest.proshedshiy == True)
 
-            if filterData["bezmp"] == True:
+            if filterData["withoutMP"] == True:
                 or_filters.append(models.ContentWebTest.bezmp == True)
 
-            if filterData["is_ad"] == True:
+            if filterData["adFilter"] == True:
                 or_filters.append(models.ContentWebTest.fonoviy == False)
 
             if or_filters:
@@ -342,7 +343,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
         count = response.count()
 
-        response = response.order_by(models.ContentWebTest.datasozdaniya.desc())
+        response = response.order_by(models.ContentWebTest.primer.desc(), models.ContentWebTest.datasozdaniya.desc())
 
         unic_list = response.limit(size).offset(page * size).all()
         
@@ -374,22 +375,25 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
                 or_filters = []
 
-                if filterData["tekuschiy"] == True:
-                    or_filters.append(models.ContentWeb.tekuschiy == True)
+                if filterData["current"] == True:
+                    or_filters.append(models.ContentWebTest.tekuschiy == True)
 
-                if filterData["buduschiy"] == True:
-                    or_filters.append(models.ContentWeb.buduschiy == True)
+                if filterData["future"] == True:
+                    or_filters.append(models.ContentWebTest.buduschiy == True)
 
-                if filterData["proshedshiy"] == True:
-                    or_filters.append(models.ContentWeb.proshedshiy == True)
+                if filterData["past"] == True:
+                    or_filters.append(models.ContentWebTest.proshedshiy == True)
 
-                if filterData["bezmp"] == True:
-                    or_filters.append(models.ContentWeb.bezmp == True)
+                if filterData["withoutMP"] == True:
+                    or_filters.append(models.ContentWebTest.bezmp == True)
+
+                if filterData["adFilter"] == True:
+                    or_filters.append(models.ContentWebTest.fonoviy == False)
 
                 if or_filters:
                     subresponse = subresponse.filter(or_(*or_filters))
         
-            count = db.execute(select(func.count()).select_from(subresponse.alias())).scalar()
+            count = db.execute(select(func.count()).select_from(subresponse.alias()).order_by(models.ContentWebTest.primer.desc())).scalar()
 
             response = db.execute(response.limit(size).offset(page * size)).scalars().unique().all()
 
