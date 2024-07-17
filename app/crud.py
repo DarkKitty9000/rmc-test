@@ -166,7 +166,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
                 if or_filters:
                     subresponse = subresponse.filter(or_(*or_filters))
 
-            subresponse = subresponse.order_by(models.ContentWeb.datasozdaniya.desc())
+            subresponse = subresponse.order_by(models.ContentWeb.primer.desc(), models.ContentWeb.datasozdaniya.desc())
 
             response = (select(models.ContentWeb).select_from((subresponse.alias()))\
                     .join(models.ContentWeb.brands, isouter = True).join(models.ContentWeb.contragents, isouter = True).join(models.ContentWeb.contact_persons, isouter = True)
