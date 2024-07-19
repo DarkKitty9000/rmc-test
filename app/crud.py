@@ -322,6 +322,15 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if filterData["adFilter"] == True:
                 or_filters.append(models.ContentWebTest.fonoviy == False)
 
+            if filterData["undoneTaskFilter"] == True:
+                or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+
+            if filterData["onServerFilter"] == True:
+                or_filters.append(models.ContentWebTest.naservere == True)
+
+            if filterData["noFileFilter"] == True:
+                or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+
             if or_filters:
                 response = response.filter(or_(*or_filters))
 
@@ -389,6 +398,15 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
                 if filterData["adFilter"] == True:
                     or_filters.append(models.ContentWebTest.fonoviy == False)
+
+                if filterData["undoneTaskFilter"] == True:
+                    or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+
+                if filterData["onServerFilter"] == True:
+                    or_filters.append(models.ContentWebTest.naservere == True)
+
+                if filterData["noFileFilter"] == True:
+                    or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
                 if or_filters:
                     subresponse = subresponse.filter(or_(*or_filters))
