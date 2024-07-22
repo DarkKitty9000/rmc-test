@@ -566,7 +566,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
     response_of_current = select(func.count(subq.c.tekuschiy))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showCurrent"] = item.count != 1
         break
@@ -574,7 +573,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.buduschiy).filter(filters_list).group_by(models.ContentWebTest.buduschiy).subquery()
     response_of_current = select(func.count(subq.c.buduschiy))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showFuture"] = item.count != 1
         break
@@ -582,7 +580,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.proshedshiy).filter(filters_list).group_by(models.ContentWebTest.proshedshiy).subquery()
     response_of_current = select(func.count(subq.c.proshedshiy))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showPast"] = item.count != 1
         break
@@ -590,7 +587,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.bezmp).filter(filters_list).group_by(models.ContentWebTest.bezmp).subquery()
     response_of_current = select(func.count(subq.c.bezmp))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showWithoutMP"] = item.count != 1
         break
@@ -598,7 +594,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
     response_of_current = select(func.count(subq.c.nevypolnennyezadachi))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showUndoneTaskFilter"] = item.count != 1
         break
@@ -606,7 +601,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
     response_of_current = select(func.count(subq.c.scenariy))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showHaveScriptFilter"] = item.count != 1
         break
@@ -614,7 +608,6 @@ def get_content_filters(
     subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
     response_of_current = select(func.count(subq.c.fonoviy))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showAdFilter"] = item.count != 1
         break
@@ -622,9 +615,37 @@ def get_content_filters(
     subq = select(models.ContentWebTest.naservere).filter(filters_list).group_by(models.ContentWebTest.naservere).subquery()
     response_of_current = select(func.count(subq.c.naservere))
     result = db.execute(response_of_current)
-    print(response_of_current)
     for item in result:
         return_dict["showOnServerFilter"] = item.count != 1
         break
 
+    type_count = {"Аудио": 0,
+                  "Видео": 0,
+                  "Текст": 0,
+                  "Картинка": 0,
+                  "": 0,
+                  "Без файла": 0}
+    
+    response_of_current = select(models.ContentWebTest.filetypes).filter(filters_list).group_by(models.ContentWebTest.filetypes)
+    response_of_total_type_count = select(func.count(models.ContentWebTest.filetypes)).filter(filters_list)
+    result = db.execute(response_of_current)
+    result_total_number = db.execute(response_of_total_type_count)
+    for item in result_total_number:
+        total_type_count = item.count
+        break
+
+    for item in result:
+        if len(item.filetypes) == 0:
+            type_count["Без файла"] += 1
+        
+        for content_type in item.filetypes:
+            type_count[content_type] += 1
+
+    return_dict["showAudioFilter"] = type_count["Аудио"] > 0 and type_count["Аудио"] != total_type_count
+    return_dict["showImageFilter"] = type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count
+    return_dict["showVideoFilter"] = type_count["Видео"] > 0 and type_count["Видео"] != total_type_count
+    return_dict["showTextFilter"] = type_count["Текст"] > 0 and type_count["Текст"] != total_type_count
+    return_dict["showUnknownFileTypeFilter"] = type_count[""] > 0 and type_count[""] != total_type_count
+    return_dict["showNoFileFilter"] = type_count["Без файла"] > 0 and type_count["Без файла"] != total_type_count
+    
     return return_dict
