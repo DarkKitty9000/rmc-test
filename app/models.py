@@ -323,6 +323,7 @@ class ContentWebTest(Base):
     brand_list = Column(ARRAY(String))
     contragent_list = Column(ARRAY(String))
     nomenclature_list = Column(ARRAY(String))
+    filetypes = Column(ARRAY(String))
 
 class Contragent(Base):
     __tablename__ = "contragent"

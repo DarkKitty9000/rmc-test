@@ -328,6 +328,21 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if filterData["onServerFilter"] == True:
                 or_filters.append(models.ContentWebTest.naservere == True)
 
+            if filterData["audioFilter"] == True:
+                or_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+
+            if filterData["videoFilter"] == True:
+                or_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+
+            if filterData["imageFilter"] == True:
+                or_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+
+            if filterData["textFilter"] == True:
+                or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+
+            if filterData["unknownFilter"] == True:
+                or_filters.append('' == any_(models.ContentWebTest.filetypes))
+
             if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
@@ -407,6 +422,21 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
                 if filterData["noFileFilter"] == True:
                     or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+
+                if filterData["audioFilter"] == True:
+                    or_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+
+                if filterData["videoFilter"] == True:
+                    or_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+
+                if filterData["imageFilter"] == True:
+                    or_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+
+                if filterData["textFilter"] == True:
+                    or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+
+                if filterData["unknownFilter"] == True:
+                    or_filters.append('' == any_(models.ContentWebTest.filetypes))
 
                 if or_filters:
                     subresponse = subresponse.filter(or_(*or_filters))
