@@ -340,7 +340,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if filterData["textFilter"] == True:
                 or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
-            if filterData["unknownFilter"] == True:
+            if filterData["unknownFileTypeFilter"] == True:
                 or_filters.append('' == any_(models.ContentWebTest.filetypes))
 
             if filterData["noFileFilter"] == True:
