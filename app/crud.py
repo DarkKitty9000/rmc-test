@@ -1,4 +1,4 @@
-from sqlalchemy import select, orm, or_, func, text, any_
+from sqlalchemy import select, orm, or_, func, text, any_, and_
 from sqlalchemy.orm import Session, joinedload, contains_eager, aliased
 from fastapi import HTTPException
 from fastapi_filter import FilterDepends
@@ -347,7 +347,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
             if or_filters:
-                response = response.filter(or_(*or_filters))
+                response = response.filter(and_(*or_filters))
 
         else:
  
@@ -517,7 +517,9 @@ def get_content_filters(
         filters_list = filters_list & or_(*additional_filter)
         filters_list_excluded_current = filters_list_excluded_current & or_(*additional_filter)
 
-    return_dict = {"brand_list":[], "contragent_list":[], "otvetstvenniy":[], "kl":[]}
+    return_dict = {"brand_list":[], "contragent_list":[], "otvetstvenniy":[], "kl":[], 
+                   "showCurrent":[], "showFuture":[], "showPast":[], "showWithoutMP":[],
+                   "showUndoneTaskFilter":[], "showHaveScriptFilter":[], "showAdFilter":[], "showOnServerFilter":[]}
 
     if data["current_filter"] == "otvetstvenniy":
         response_of_responsibles = select(models.ContentWebTest.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWebTest.otvetstvenniy)
@@ -560,5 +562,69 @@ def get_content_filters(
     result = db.execute(response_of_kl)
     for item in result:
         return_dict["kl"].append(item.kl) if not item.kl in data["filters_list"]['kl'] else True
+
+    subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
+    response_of_current = select(func.count(subq.c.tekuschiy))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showCurrent"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.buduschiy).filter(filters_list).group_by(models.ContentWebTest.buduschiy).subquery()
+    response_of_current = select(func.count(subq.c.buduschiy))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showFuture"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.proshedshiy).filter(filters_list).group_by(models.ContentWebTest.proshedshiy).subquery()
+    response_of_current = select(func.count(subq.c.proshedshiy))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showPast"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.bezmp).filter(filters_list).group_by(models.ContentWebTest.bezmp).subquery()
+    response_of_current = select(func.count(subq.c.bezmp))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showWithoutMP"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
+    response_of_current = select(func.count(subq.c.nevypolnennyezadachi))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showUndoneTaskFilter"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
+    response_of_current = select(func.count(subq.c.scenariy))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showHaveScriptFilter"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
+    response_of_current = select(func.count(subq.c.fonoviy))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showAdFilter"] = item.count != 1
+        break
+
+    subq = select(models.ContentWebTest.naservere).filter(filters_list).group_by(models.ContentWebTest.naservere).subquery()
+    response_of_current = select(func.count(subq.c.naservere))
+    result = db.execute(response_of_current)
+    print(response_of_current)
+    for item in result:
+        return_dict["showOnServerFilter"] = item.count != 1
+        break
 
     return return_dict
