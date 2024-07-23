@@ -329,6 +329,9 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if filterData["undoneTaskFilter"] == True:
                 or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
 
+            if filterData["undoneTaskFilter"] == True:
+                or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+
             if filterData["onServerFilter"] == True:
                 or_filters.append(models.ContentWebTest.naservere == True)
 
@@ -343,6 +346,9 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
             if filterData["textFilter"] == True:
                 or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+
+            if filterData["haveScriptFilter"] == True:
+                or_filters.append(models.ContentWebTest.scenariy != '')
 
             if filterData["unknownFileTypeFilter"] == True:
                 or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
@@ -454,6 +460,9 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if filterData["onServerFilter"] == True:
                     or_filters.append(models.ContentWebTest.naservere == True)
 
+                if filterData["haveScriptFilter"] == True:
+                    or_filters.append(models.ContentWebTest.scenariy != '')
+
                 if filterData["noFileFilter"] == True:
                     or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
@@ -563,6 +572,9 @@ def get_content_filters(
 
                 if filter == "noFileFilter":
                     flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+
+                if filter == "haveScriptFilter":
+                    flag_filters.append(models.ContentWebTest.scenariy != '')
 
                 if filter == "audioFilter":
                     flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
@@ -693,10 +705,18 @@ def get_content_filters(
         break
 
     subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
+    subq_no_script = select(models.ContentWebTest.scenariy).filter(filters_list & (models.ContentWebTest.scenariy == '')).group_by(models.ContentWebTest.scenariy).subquery()
+    
     response_of_current = select(func.count(subq.c.scenariy))
+    response_of_current_no_script = select(func.count(subq_no_script.c.scenariy))
     result = db.execute(response_of_current)
+    result_no_script = db.execute(response_of_current_no_script)
+    have_empty = True
     for item in result:
-        return_dict["showHaveScriptFilter"] = item.count != 1
+        for item_no_script in result_no_script:
+            have_empty = item_no_script.count > 0
+            break
+        return_dict["showHaveScriptFilter"] = item.count != 1 and have_empty
         break
 
     subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
