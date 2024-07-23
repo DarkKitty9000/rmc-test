@@ -345,7 +345,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
             if filterData["unknownFileTypeFilter"] == True:
-                or_filters.append('' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
             if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
@@ -469,7 +469,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if filterData["textFilter"] == True:
                     or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
-                if filterData["unknownFilter"] == True:
+                if filterData["unknownFileTypeFilter"] == True:
                     or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
                 if len(or_filters) == 0:
@@ -576,7 +576,7 @@ def get_content_filters(
                 if filter == "textFilter":
                     flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "unknownFilter":
+                if filter == "unknownFileTypeFilter":
                     flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
     if len(flag_filters) == 0:
