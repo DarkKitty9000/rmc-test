@@ -674,35 +674,35 @@ def get_content_filters(
     response_of_current = select(func.count(subq.c.tekuschiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showCurrent"] = item.count != 1 and not data["showCurrent"]
+        return_dict["showCurrent"] = item.count != 1 or data["showCurrent"]
         break
 
     subq = select(models.ContentWebTest.buduschiy).filter(filters_list).group_by(models.ContentWebTest.buduschiy).subquery()
     response_of_current = select(func.count(subq.c.buduschiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showFuture"] = item.count != 1 and not data["showFuture"]
+        return_dict["showFuture"] = item.count != 1 or data["showFuture"]
         break
 
     subq = select(models.ContentWebTest.proshedshiy).filter(filters_list).group_by(models.ContentWebTest.proshedshiy).subquery()
     response_of_current = select(func.count(subq.c.proshedshiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showPast"] = item.count != 1 and not data["showPast"]
+        return_dict["showPast"] = item.count != 1 or data["showPast"]
         break
 
     subq = select(models.ContentWebTest.bezmp).filter(filters_list).group_by(models.ContentWebTest.bezmp).subquery()
     response_of_current = select(func.count(subq.c.bezmp))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showWithoutMP"] = item.count != 1 and not data["showWithoutMP"]
+        return_dict["showWithoutMP"] = item.count != 1 or data["showWithoutMP"]
         break
 
     subq = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
     response_of_current = select(func.count(subq.c.nevypolnennyezadachi))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showUndoneTaskFilter"] = item.count != 1 and not data["showUndoneTaskFilter"]
+        return_dict["showUndoneTaskFilter"] = item.count != 1 or data["showUndoneTaskFilter"]
         break
 
     subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
@@ -717,21 +717,21 @@ def get_content_filters(
         for item_no_script in result_no_script:
             have_empty = item_no_script.count > 0
             break
-        return_dict["showHaveScriptFilter"] = item.count != 1 and have_empty and not data["showHaveScriptFilter"]
+        return_dict["showHaveScriptFilter"] = (item.count != 1 and have_empty) or data["showHaveScriptFilter"]
         break
 
     subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
     response_of_current = select(func.count(subq.c.fonoviy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showAdFilter"] = item.count != 1 and not data["showAdFilter"]
+        return_dict["showAdFilter"] = item.count != 1 or data["showAdFilter"]
         break
 
     subq = select(models.ContentWebTest.naservere).filter(filters_list).group_by(models.ContentWebTest.naservere).subquery()
     response_of_current = select(func.count(subq.c.naservere))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showOnServerFilter"] = item.count != 1 and not data["showOnServerFilter"]
+        return_dict["showOnServerFilter"] = item.count != 1 or data["showOnServerFilter"]
         break
 
     type_count = {"Аудио": 0,
@@ -757,11 +757,11 @@ def get_content_filters(
             if content_type in type_count.keys():
                 type_count[content_type] += 1
 
-    return_dict["showAudioFilter"] = type_count["Аудио"] > 0 and type_count["Аудио"] != total_type_count and not data["showAudioFilter"]
-    return_dict["showImageFilter"] = type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count and not data["showImageFilter"]
-    return_dict["showVideoFilter"] = type_count["Видео"] > 0 and type_count["Видео"] != total_type_count and not data["showVideoFilter"]
-    return_dict["showTextFilter"] = type_count["Текст"] > 0 and type_count["Текст"] != total_type_count and not data["showTextFilter"]
-    return_dict["showUnknownFileTypeFilter"] = type_count["Неопределено"] > 0 and type_count["Неопределено"] != total_type_count and not data["showUnknownFileTypeFilter"]
-    return_dict["showNoFileFilter"] = type_count["Без файла"] > 0 and type_count["Без файла"] != total_type_count and not data["showNoFileFilter"]
+    return_dict["showAudioFilter"] = (type_count["Аудио"] > 0 and type_count["Аудио"] != total_type_count) or data["showAudioFilter"]
+    return_dict["showImageFilter"] = (type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count) or data["showImageFilter"]
+    return_dict["showVideoFilter"] = (type_count["Видео"] > 0 and type_count["Видео"] != total_type_count) or data["showVideoFilter"]
+    return_dict["showTextFilter"] = (type_count["Текст"] > 0 and type_count["Текст"] != total_type_count) or data["showTextFilter"]
+    return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0 and type_count["Неопределено"] != total_type_count) or data["showUnknownFileTypeFilter"]
+    return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0 and type_count["Без файла"] != total_type_count) or data["showNoFileFilter"]
     
     return return_dict
