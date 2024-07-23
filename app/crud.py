@@ -362,6 +362,9 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             for item in filterData["otvetstvenniy"]:
                 filters_list_otvetstvenniy.append(item == models.ContentWebTest.otvetstvenniy)
 
+            if len(or_filters) == 0:
+                or_filters.append(True)
+
             if len(filters_list_brand) == 0:
                 filters_list_brand.append(True)
 
@@ -374,8 +377,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if len(filters_list_otvetstvenniy) == 0:
                 filters_list_otvetstvenniy.append(True)
 
-            if or_filters:
-                response = response.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
+            response = response.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
 
         else:
  
@@ -470,6 +472,9 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if filterData["unknownFilter"] == True:
                     or_filters.append('' == any_(models.ContentWebTest.filetypes))
 
+                if len(or_filters) == 0:
+                    or_filters.append(True)
+
                 if len(filters_list_brand) == 0:
                     filters_list_brand.append(True)
 
@@ -482,8 +487,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if len(filters_list_otvetstvenniy) == 0:
                     filters_list_otvetstvenniy.append(True)
 
-                if or_filters:
-                    subresponse = subresponse.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
+                subresponse = subresponse.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
 
         
             count = db.execute(select(func.count()).select_from(subresponse.alias()).order_by(models.ContentWebTest.primer.desc())).scalar()
