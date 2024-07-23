@@ -531,65 +531,64 @@ def get_content_filters(
     filters_list_kl = []
     flag_filters = []
             
-    for filter in data["filters_list"]:
+    for input_parameter in data:
 
-        if type(data["filters_list"][filter]) == type([]):     
-            
-            for list_filter in data["filters_list"][filter]:
+        if input_parameter == "filters_list":
 
-                if filter == "brand_list":
-                    filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
-                elif filter == "contragent_list":
-                    filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
-                elif filter == "otvetstvenniy":
-                    filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
-                elif filter == "kl":
-                    filters_list_kl.append(models.ContentWebTest.kl == list_filter)
+            for filter in data["filters_list"]:
+                
+                for list_filter in data["filters_list"][filter]:
 
-        else:
+                    if filter == "brand_list":
+                        filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
+                    elif filter == "contragent_list":
+                        filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
+                    elif filter == "otvetstvenniy":
+                        filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
+                    elif filter == "kl":
+                        filters_list_kl.append(models.ContentWebTest.kl == list_filter)
 
-            if data["filters_list"][filter]:
-                if filter == "showCurrent":
-                    flag_filters.append(models.ContentWebTest.tekuschiy == True)
+        if input_parameter == "showCurrent":
+            flag_filters.append(models.ContentWebTest.tekuschiy == True)
 
-                if filter == "showFuture":
-                    flag_filters.append(models.ContentWebTest.buduschiy == True)
+        if input_parameter == "showFuture":
+            flag_filters.append(models.ContentWebTest.buduschiy == True)
 
-                if filter == "showPast":
-                    flag_filters.append(models.ContentWebTest.proshedshiy == True)
+        if input_parameter == "showPast":
+            flag_filters.append(models.ContentWebTest.proshedshiy == True)
 
-                if filter == "showWithoutMP":
-                    flag_filters.append(models.ContentWebTest.bezmp == True)
+        if input_parameter == "showWithoutMP":
+            flag_filters.append(models.ContentWebTest.bezmp == True)
 
-                if filter == "showAdFilter":
-                    flag_filters.append(models.ContentWebTest.fonoviy == False)
+        if input_parameter == "showAdFilter":
+            flag_filters.append(models.ContentWebTest.fonoviy == False)
 
-                if filter == "showUndoneTaskFilter":
-                    flag_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+        if input_parameter == "showUndoneTaskFilter":
+            flag_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
 
-                if filter == "showOnServerFilter":
-                    flag_filters.append(models.ContentWebTest.naservere == True)
+        if input_parameter == "showOnServerFilter":
+            flag_filters.append(models.ContentWebTest.naservere == True)
 
-                if filter == "showNoFileFilter":
-                    flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+        if input_parameter == "showNoFileFilter":
+            flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
-                if filter == "showHaveScriptFilter":
-                    flag_filters.append(models.ContentWebTest.scenariy != '')
+        if input_parameter == "showHaveScriptFilter":
+            flag_filters.append(models.ContentWebTest.scenariy != '')
 
-                if filter == "showAudioFilter":
-                    flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+        if input_parameter == "showAudioFilter":
+            flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "showVideoFilter":
-                    flag_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+        if input_parameter == "showVideoFilter":
+            flag_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "showImageFilter":
-                    flag_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+        if input_parameter == "showImageFilter":
+            flag_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "showTextFilter":
-                    flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+        if input_parameter == "showTextFilter":
+            flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "showUnknownFileTypeFilter":
-                    flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
+        if input_parameter == "showUnknownFileTypeFilter":
+            flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
     if len(flag_filters) == 0:
         flag_filters.append(True)
