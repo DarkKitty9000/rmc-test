@@ -516,19 +516,67 @@ def get_content_filters(
     filters_list_contragent = []
     filters_list_otvetstvenniy = []
     filters_list_kl = []
+    flag_filters = []
+            
     for filter in data["filters_list"]:
 
-        for list_filter in data["filters_list"][filter]:
-                
-            if filter == "brand_list":
-                filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
-            elif filter == "contragent_list":
-                filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
-            elif filter == "otvetstvenniy":
-                filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
-            elif filter == "kl":
-                filters_list_kl.append(models.ContentWebTest.kl == list_filter)
+        if type(data["filters_list"][filter]) == type([]):     
+            
+            for list_filter in data["filters_list"][filter]:
 
+                if filter == "brand_list":
+                    filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
+                elif filter == "contragent_list":
+                    filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
+                elif filter == "otvetstvenniy":
+                    filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
+                elif filter == "kl":
+                    filters_list_kl.append(models.ContentWebTest.kl == list_filter)
+
+        else:
+
+            if data["filters_list"][filter]:
+                if filter == "current":
+                    flag_filters.append(models.ContentWebTest.tekuschiy == True)
+
+                if filter == "future":
+                    flag_filters.append(models.ContentWebTest.buduschiy == True)
+
+                if filter == "past":
+                    flag_filters.append(models.ContentWebTest.proshedshiy == True)
+
+                if filter == "withoutMP":
+                    flag_filters.append(models.ContentWebTest.bezmp == True)
+
+                if filter == "adFilter":
+                    flag_filters.append(models.ContentWebTest.fonoviy == False)
+
+                if filter == "undoneTaskFilter":
+                    flag_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+
+                if filter == "onServerFilter":
+                    flag_filters.append(models.ContentWebTest.naservere == True)
+
+                if filter == "noFileFilter":
+                    flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+
+                if filter == "audioFilter":
+                    flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+
+                if filter == "videoFilter":
+                    flag_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+
+                if filter == "imageFilter":
+                    flag_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+
+                if filter == "textFilter":
+                    flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+
+                if filter == "unknownFilter":
+                    flag_filters.append('' == any_(models.ContentWebTest.filetypes))
+
+    if len(flag_filters) == 0:
+        flag_filters.append(True)
     if len(filters_list_brand) == 0:
         filters_list_brand.append(True)
     if len(filters_list_contragent) == 0:
@@ -538,23 +586,23 @@ def get_content_filters(
     if len(filters_list_kl) == 0:
         filters_list_kl.append(True)
         
-    filters_list = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy)
+    filters_list = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*flag_filters)
             
     if data["current_filter"] == "brand_list":
         
-        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy)
+        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*flag_filters)
 
     elif data["current_filter"] == "contragent_list":
         
-        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_otvetstvenniy)
+        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_otvetstvenniy) & and_(*flag_filters)
 
     elif data["current_filter"] == "otvetstvenniy":
         
-        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent)
+        filters_list_excluded_current = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent) & and_(*flag_filters)
 
-    else:
+    elif data["current_filter"] == "kl":
         
-        filters_list_excluded_current = or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy)
+        filters_list_excluded_current = or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*flag_filters)
 
     if len(additional_filter) > 0:
 
@@ -569,8 +617,6 @@ def get_content_filters(
         response_of_responsibles = select(models.ContentWebTest.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWebTest.otvetstvenniy)
     else:
         response_of_responsibles = select(models.ContentWebTest.otvetstvenniy).filter(filters_list).group_by(models.ContentWebTest.otvetstvenniy)
-
-    print(response_of_responsibles)
 
     result = db.execute(response_of_responsibles)
     for item in result:
