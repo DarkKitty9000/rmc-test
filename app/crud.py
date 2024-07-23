@@ -549,46 +549,46 @@ def get_content_filters(
         else:
 
             if data["filters_list"][filter]:
-                if filter == "current":
+                if filter == "showCurrent":
                     flag_filters.append(models.ContentWebTest.tekuschiy == True)
 
-                if filter == "future":
+                if filter == "showFuture":
                     flag_filters.append(models.ContentWebTest.buduschiy == True)
 
-                if filter == "past":
+                if filter == "showPast":
                     flag_filters.append(models.ContentWebTest.proshedshiy == True)
 
-                if filter == "withoutMP":
+                if filter == "showWithoutMP":
                     flag_filters.append(models.ContentWebTest.bezmp == True)
 
-                if filter == "adFilter":
+                if filter == "showAdFilter":
                     flag_filters.append(models.ContentWebTest.fonoviy == False)
 
-                if filter == "undoneTaskFilter":
+                if filter == "showUndoneTaskFilter":
                     flag_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
 
-                if filter == "onServerFilter":
+                if filter == "showOnServerFilter":
                     flag_filters.append(models.ContentWebTest.naservere == True)
 
-                if filter == "noFileFilter":
+                if filter == "showNoFileFilter":
                     flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
-                if filter == "haveScriptFilter":
+                if filter == "showHaveScriptFilter":
                     flag_filters.append(models.ContentWebTest.scenariy != '')
 
-                if filter == "audioFilter":
+                if filter == "showAudioFilter":
                     flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "videoFilter":
+                if filter == "showVideoFilter":
                     flag_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "imageFilter":
+                if filter == "showImageFilter":
                     flag_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "textFilter":
+                if filter == "showTextFilter":
                     flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
-                if filter == "unknownFileTypeFilter":
+                if filter == "showUnknownFileTypeFilter":
                     flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
     if len(flag_filters) == 0:
