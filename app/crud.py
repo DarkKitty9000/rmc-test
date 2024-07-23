@@ -639,7 +639,8 @@ def get_content_filters(
             type_count["Без файла"] += 1
         
         for content_type in item.filetypes:
-            type_count[content_type] += 1
+            if content_type in type_count.keys():
+                type_count[content_type] += 1
 
     return_dict["showAudioFilter"] = type_count["Аудио"] > 0 and type_count["Аудио"] != total_type_count
     return_dict["showImageFilter"] = type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count
