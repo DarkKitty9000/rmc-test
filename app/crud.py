@@ -306,6 +306,10 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
         if filterData["search"] == "":
 
             or_filters = []
+            filters_list_brand = []
+            filters_list_contragent = []
+            filters_list_otvetstvenniy = []
+            filters_list_kl = []
 
             if filterData["current"] == True:
                 or_filters.append(models.ContentWebTest.tekuschiy == True)
@@ -346,8 +350,32 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
 
+            for item in filterData["brand_list"]:
+                filters_list_brand.append(item == any_(models.ContentWebTest.brand_list))
+
+            for item in filterData["contragent_list"]:
+                filters_list_contragent.append(item == any_(models.ContentWebTest.contragent_list))
+
+            for item in filterData["kl"]:
+                filters_list_kl.append(item == models.ContentWebTest.kl)
+
+            for item in filterData["otvetstvenniy"]:
+                filters_list_otvetstvenniy.append(item == models.ContentWebTest.otvetstvenniy)
+
+            if len(filters_list_brand) == 0:
+                filters_list_brand.append(True)
+
+            if len(filters_list_contragent) == 0:
+                filters_list_contragent.append(True)
+
+            if len(filters_list_kl) == 0:
+                filters_list_kl.append(True)
+
+            if len(filters_list_otvetstvenniy) == 0:
+                filters_list_otvetstvenniy.append(True)
+
             if or_filters:
-                response = response.filter(and_(*or_filters))
+                response = response.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
 
         else:
  
@@ -398,6 +426,10 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             else:
 
                 or_filters = []
+                filters_list_brand = []
+                filters_list_contragent = []
+                filters_list_otvetstvenniy = []
+                filters_list_kl = []
 
                 if filterData["current"] == True:
                     or_filters.append(models.ContentWebTest.tekuschiy == True)
@@ -438,8 +470,21 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if filterData["unknownFilter"] == True:
                     or_filters.append('' == any_(models.ContentWebTest.filetypes))
 
+                if len(filters_list_brand) == 0:
+                    filters_list_brand.append(True)
+
+                if len(filters_list_contragent) == 0:
+                    filters_list_contragent.append(True)
+
+                if len(filters_list_kl) == 0:
+                    filters_list_kl.append(True)
+
+                if len(filters_list_otvetstvenniy) == 0:
+                    filters_list_otvetstvenniy.append(True)
+
                 if or_filters:
-                    subresponse = subresponse.filter(or_(*or_filters))
+                    subresponse = subresponse.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
+
         
             count = db.execute(select(func.count()).select_from(subresponse.alias()).order_by(models.ContentWebTest.primer.desc())).scalar()
 
@@ -471,7 +516,6 @@ def get_content_filters(
     filters_list_contragent = []
     filters_list_otvetstvenniy = []
     filters_list_kl = []
-    
     for filter in data["filters_list"]:
 
         for list_filter in data["filters_list"][filter]:
@@ -480,7 +524,7 @@ def get_content_filters(
                 filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
             elif filter == "contragent_list":
                 filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
-            if filter == "otvetstvenniy":
+            elif filter == "otvetstvenniy":
                 filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
             elif filter == "kl":
                 filters_list_kl.append(models.ContentWebTest.kl == list_filter)
