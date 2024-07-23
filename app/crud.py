@@ -470,7 +470,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                     or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
                 if filterData["unknownFilter"] == True:
-                    or_filters.append('' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
                 if len(or_filters) == 0:
                     or_filters.append(True)
@@ -577,7 +577,7 @@ def get_content_filters(
                     flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
 
                 if filter == "unknownFilter":
-                    flag_filters.append('' == any_(models.ContentWebTest.filetypes))
+                    flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
 
     if len(flag_filters) == 0:
         flag_filters.append(True)
@@ -717,7 +717,7 @@ def get_content_filters(
                   "Видео": 0,
                   "Текст": 0,
                   "Картинка": 0,
-                  "": 0,
+                  "Неопределено": 0,
                   "Без файла": 0}
     
     response_of_current = select(models.ContentWebTest.filetypes).filter(filters_list).group_by(models.ContentWebTest.filetypes)
@@ -740,7 +740,7 @@ def get_content_filters(
     return_dict["showImageFilter"] = type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count
     return_dict["showVideoFilter"] = type_count["Видео"] > 0 and type_count["Видео"] != total_type_count
     return_dict["showTextFilter"] = type_count["Текст"] > 0 and type_count["Текст"] != total_type_count
-    return_dict["showUnknownFileTypeFilter"] = type_count[""] > 0 and type_count[""] != total_type_count
+    return_dict["showUnknownFileTypeFilter"] = type_count["Неопределено"] > 0 and type_count["Неопределено"] != total_type_count
     return_dict["showNoFileFilter"] = type_count["Без файла"] > 0 and type_count["Без файла"] != total_type_count
     
     return return_dict
