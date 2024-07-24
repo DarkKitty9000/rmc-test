@@ -144,13 +144,14 @@ async def load_content_web_test(
     token = xrmccookie
     data = await request.json()
     print(data)
+    max_page = 1
  
     if token is None or token == "":
         contents, count = crud.get_content_web_test_non_auth(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        contents, count = crud.get_content_web_test(db = db, token = token, filterData = data, page = page, size = size) 
+        max_page, contents, count = crud.get_content_web_test(db = db, token = token, filterData = data, page = page, size = size) 
     temp_list = [] 
     if contents is not None:        
         for element in contents:
@@ -188,6 +189,7 @@ async def load_content_web_test(
     res = {
                
         "ОбщееКоличество": count,
+        "МаксимальноеКоличествоСтраниц": max_page,
         'СтрокаТЧ': temp_list
     }
     return res     

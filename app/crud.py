@@ -403,11 +403,13 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
         count = response.count()
 
+        max_page = count//size + 1
+
         response = response.order_by(models.ContentWebTest.primer.desc(), models.ContentWebTest.datasozdaniya.desc())
 
         unic_list = response.limit(size).offset(page * size).all()
         
-        return unic_list, count 
+        return max_page, unic_list, count 
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -503,7 +505,10 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
             response = db.execute(response.limit(size).offset(page * size)).scalars().unique().all()
 
-            return response, count
+            max_page = count//size + 1
+            
+            return max_page, response, count
+        
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
             return None
