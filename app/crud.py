@@ -759,7 +759,7 @@ def get_content_filters(
         break
 
     subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
-    subq_only_false = select(models.ContentWebTest.fonoviy).filter(filters_list & (models.ContentWebTest.fonoviy == False)).group_by(models.ContentWebTest.fonoviy).subquery()
+    subq_only_false = select(models.ContentWebTest.fonoviy).filter(filters_list & (models.ContentWebTest.fonoviy == True)).group_by(models.ContentWebTest.fonoviy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.fonoviy))
     result = db.execute(response_of_current)
