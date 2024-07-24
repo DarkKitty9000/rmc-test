@@ -654,8 +654,6 @@ def get_content_filters(
     else:
         response_of_contragent = select(models.ContentWebTest.contragent_list).filter(filters_list).group_by(models.ContentWebTest.contragent_list)
 
-    print(response_of_contragent)
-
     result = db.execute(response_of_contragent)
     for item in result:
         for contragent in item.contragent_list:
@@ -671,67 +669,138 @@ def get_content_filters(
         return_dict["kl"].append(item.kl) if not item.kl in data["filters_list"]['kl'] else True
 
     subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
+    subq_only_false = select(models.ContentWebTest.tekuschiy).filter(filters_list & (models.ContentWebTest.tekuschiy == False)).group_by(models.ContentWebTest.tekuschiy).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.tekuschiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showCurrent"] = item.count != 1 or data["showCurrent"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.tekuschiy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showCurrent"] = not (item.count == 1 and only_false) 
         break
-
+    
     subq = select(models.ContentWebTest.buduschiy).filter(filters_list).group_by(models.ContentWebTest.buduschiy).subquery()
+    subq_only_false = select(models.ContentWebTest.buduschiy).filter(filters_list & (models.ContentWebTest.buduschiy == False)).group_by(models.ContentWebTest.buduschiy).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.buduschiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showFuture"] = item.count != 1 or data["showFuture"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.buduschiy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showFuture"] = not (item.count == 1 and only_false) 
         break
 
     subq = select(models.ContentWebTest.proshedshiy).filter(filters_list).group_by(models.ContentWebTest.proshedshiy).subquery()
+    subq_only_false = select(models.ContentWebTest.proshedshiy).filter(filters_list & (models.ContentWebTest.proshedshiy == False)).group_by(models.ContentWebTest.proshedshiy).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.proshedshiy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showPast"] = item.count != 1 or data["showPast"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.proshedshiy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showPast"] = not (item.count == 1 and only_false) 
         break
 
     subq = select(models.ContentWebTest.bezmp).filter(filters_list).group_by(models.ContentWebTest.bezmp).subquery()
+    subq_only_false = select(models.ContentWebTest.bezmp).filter(filters_list & (models.ContentWebTest.bezmp == False)).group_by(models.ContentWebTest.bezmp).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.bezmp))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showWithoutMP"] = item.count != 1 or data["showWithoutMP"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.bezmp))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showWithoutMP"] = not (item.count == 1 and only_false) 
         break
 
     subq = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
+    subq_only_false = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list & (models.ContentWebTest.nevypolnennyezadachi == False)).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.nevypolnennyezadachi))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showUndoneTaskFilter"] = item.count != 1 or data["showUndoneTaskFilter"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.nevypolnennyezadachi))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showCurrent"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
-    subq_no_script = select(models.ContentWebTest.scenariy).filter(filters_list & (models.ContentWebTest.scenariy == '')).group_by(models.ContentWebTest.scenariy).subquery()
-    
-    response_of_current = select(func.count(subq.c.scenariy))
-    response_of_current_no_script = select(func.count(subq_no_script.c.scenariy))
+    subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
+    subq_only_false = select(models.ContentWebTest.tekuschiy).filter(filters_list & (models.ContentWebTest.tekuschiy == False)).group_by(models.ContentWebTest.tekuschiy).subquery()
+    only_false = False
+    response_of_current = select(func.count(subq.c.tekuschiy))
     result = db.execute(response_of_current)
-    result_no_script = db.execute(response_of_current_no_script)
-    have_empty = True
     for item in result:
-        for item_no_script in result_no_script:
-            have_empty = item_no_script.count > 0
-            break
-        return_dict["showHaveScriptFilter"] = (item.count != 1 and have_empty) or data["showHaveScriptFilter"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.tekuschiy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showUndoneTaskFilter"] = not (item.count == 1 and only_false) 
         break
 
     subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
+    subq_only_false = select(models.ContentWebTest.fonoviy).filter(filters_list & (models.ContentWebTest.fonoviy == False)).group_by(models.ContentWebTest.fonoviy).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.fonoviy))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showAdFilter"] = item.count != 1 or data["showAdFilter"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.fonoviy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showAdFilter"] = not (item.count == 1 and only_false) 
+        break
+
+    subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
+    subq_only_false = select(models.ContentWebTest.scenariy).filter(filters_list & (models.ContentWebTest.scenariy == "")).group_by(models.ContentWebTest.scenariy).subquery()
+    only_false = False
+    response_of_current = select(func.count(subq.c.scenariy))
+    result = db.execute(response_of_current)
+    for item in result:
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.scenariy))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showHaveScriptFilter"] = not (item.count == 1 and only_false) 
         break
 
     subq = select(models.ContentWebTest.naservere).filter(filters_list).group_by(models.ContentWebTest.naservere).subquery()
+    subq_only_false = select(models.ContentWebTest.naservere).filter(filters_list & (models.ContentWebTest.naservere == False)).group_by(models.ContentWebTest.naservere).subquery()
+    only_false = False
     response_of_current = select(func.count(subq.c.naservere))
     result = db.execute(response_of_current)
     for item in result:
-        return_dict["showOnServerFilter"] = item.count != 1 or data["showOnServerFilter"]
+        if item.count == 1:
+            response_of_current_only_false = select(func.count(subq_only_false.c.naservere))
+            result_only_false = db.execute(response_of_current_only_false)
+            for item_only_false in result_only_false:
+                only_false = item_only_false.count == 1
+                break
+        return_dict["showHaveScriptFilter"] = not (item.count == 1 and only_false) 
         break
 
     type_count = {"Аудио": 0,
@@ -757,11 +826,11 @@ def get_content_filters(
             if content_type in type_count.keys():
                 type_count[content_type] += 1
 
-    return_dict["showAudioFilter"] = (type_count["Аудио"] > 0 and type_count["Аудио"] != total_type_count) or data["showAudioFilter"]
-    return_dict["showImageFilter"] = (type_count["Картинка"] > 0 and type_count["Картинка"] != total_type_count) or data["showImageFilter"]
-    return_dict["showVideoFilter"] = (type_count["Видео"] > 0 and type_count["Видео"] != total_type_count) or data["showVideoFilter"]
-    return_dict["showTextFilter"] = (type_count["Текст"] > 0 and type_count["Текст"] != total_type_count) or data["showTextFilter"]
-    return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0 and type_count["Неопределено"] != total_type_count) or data["showUnknownFileTypeFilter"]
-    return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0 and type_count["Без файла"] != total_type_count) or data["showNoFileFilter"]
+    return_dict["showAudioFilter"] = (type_count["Аудио"] > 0)
+    return_dict["showImageFilter"] = (type_count["Картинка"] > 0)
+    return_dict["showVideoFilter"] = (type_count["Видео"] > 0)
+    return_dict["showTextFilter"] = (type_count["Текст"])
+    return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0)
+    return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0)
     
     return return_dict
