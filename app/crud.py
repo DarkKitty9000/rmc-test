@@ -745,21 +745,6 @@ def get_content_filters(
             for item_only_false in result_only_false:
                 only_false = item_only_false.count == 1
                 break
-        return_dict["showCurrent"] = not (item.count == 1 and only_false) 
-        break
-
-    subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
-    subq_only_false = select(models.ContentWebTest.tekuschiy).filter(filters_list & (models.ContentWebTest.tekuschiy == False)).group_by(models.ContentWebTest.tekuschiy).subquery()
-    only_false = False
-    response_of_current = select(func.count(subq.c.tekuschiy))
-    result = db.execute(response_of_current)
-    for item in result:
-        if item.count == 1:
-            response_of_current_only_false = select(func.count(subq_only_false.c.tekuschiy))
-            result_only_false = db.execute(response_of_current_only_false)
-            for item_only_false in result_only_false:
-                only_false = item_only_false.count == 1
-                break
         return_dict["showUndoneTaskFilter"] = not (item.count == 1 and only_false) 
         break
 
@@ -805,7 +790,7 @@ def get_content_filters(
             for item_only_false in result_only_false:
                 only_false = item_only_false.count == 1
                 break
-        return_dict["showHaveScriptFilter"] = not (item.count == 1 and only_false) 
+        return_dict["showOnServerFilter"] = not (item.count == 1 and only_false) 
         break
 
     type_count = {"Аудио": 0,
@@ -834,7 +819,7 @@ def get_content_filters(
     return_dict["showAudioFilter"] = (type_count["Аудио"] > 0)
     return_dict["showImageFilter"] = (type_count["Картинка"] > 0)
     return_dict["showVideoFilter"] = (type_count["Видео"] > 0)
-    return_dict["showTextFilter"] = (type_count["Текст"])
+    return_dict["showTextFilter"] = (type_count["Текст"] > 0)
     return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0)
     return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0)
     
