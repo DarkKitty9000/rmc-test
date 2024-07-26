@@ -133,8 +133,8 @@ async def get_nomenclature_placing(
     }
     return res
 
-@app.post('/LoadContentWebTest')
-async def load_content_web_test(
+@app.post('/LoadContentWeb')
+async def load_content_web(
     request: Request,
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None),
@@ -143,15 +143,14 @@ async def load_content_web_test(
 ):
     token = xrmccookie
     data = await request.json()
-    print(data)
     max_page = 1
  
     if token is None or token == "":
-        contents, count = crud.get_content_web_test_non_auth(db=db)
+        contents, count = crud.get_content_web_non_auth(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        max_page, contents, count = crud.get_content_web_test(db = db, token = token, filterData = data, page = page, size = size) 
+        max_page, contents, count = crud.get_content_web(db = db, token = token, filterData = data, page = page, size = size) 
     temp_list = [] 
     if contents is not None:        
         for element in contents:
@@ -194,7 +193,7 @@ async def load_content_web_test(
     }
     return res     
 
-@app.post('/LoadContentWeb')
+""" @app.post('/LoadContentWeb')
 async def load_content_web(
     request: Request,
     db: Session = Depends(get_db),
@@ -266,7 +265,7 @@ async def load_content_web(
         "ОбщееКоличество": count,
         'СтрокаТЧ': temp_list
     }
-    return res
+    return res """
 
 
 @app.post("/LoadNomenclature")

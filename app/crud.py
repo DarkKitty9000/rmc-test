@@ -49,13 +49,13 @@ def get_nomenclature_placing_from_db_for_user(
             return None
     
 
-def get_content_web(db: Session) -> models.ContentWeb:
-    """
+""" def get_content_web(db: Session) -> models.ContentWeb:
+    
     Метод получения примеров контента
     db - Сессия базы данных,
     token - Токен авторизации пользователя
     Вызывается если пользователь не авторизован
-    """
+    
     response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
     count = db.query(func.count(models.ContentWeb.link)).scalar()
     return response, count
@@ -63,14 +63,13 @@ def get_content_web(db: Session) -> models.ContentWeb:
 
 def get_content_web_for_user(db: Session, token: str, filterData: str, page: int, size: int) -> models.ContentWeb: 
                            
-    """
     Метод получения контента по пользователю.
     db - Сессия базы данных,
     token - Токен авторизации пользователя
     filterData - Данные фильтрации в запросе
     page - отдаваемая страница массива данных
     size - размерность страницы массива данных
-    """
+ 
     user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
     subresponse = (select(models.ContentWeb).join(models.ContentWeb.brands, isouter = True)\
@@ -180,7 +179,7 @@ def get_content_web_for_user(db: Session, token: str, filterData: str, page: int
             return response, count
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
-            return None
+            return None """
     
 
 
@@ -199,7 +198,7 @@ def get_user_by_token(db: Session, token: str):
         ).first()
         return user
     except:
-         raise HTTPException(status_code = 404, detail = "Пользователь не найден.")
+        raise HTTPException(status_code = 404, detail = "Пользователь не найден.")
 
 
 def get_contragent_by_user(db: Session, user: models.User):
@@ -275,19 +274,19 @@ def get_nomenclature_cv_primer(db: Session) -> models.ContentWeb:
     response = db.query(models.NomenclatureCV).filter(models.NomenclatureCV.primer == True).all()
     return response
 
-def get_content_web_test_non_auth(db: Session) -> models.ContentWeb:
+def get_content_web_non_auth(db: Session) -> models.ContentWeb:
     """
     Метод получения примеров контента
     db - Сессия базы данных,
     token - Токен авторизации пользователя
     Вызывается если пользователь не авторизован
     """
-    response = db.query(models.ContentWebTest).filter(models.ContentWebTest.primer == True)
-    count = db.query(func.count(models.ContentWebTest.link)).scalar()
+    response = db.query(models.ContentWeb).filter(models.ContentWeb.primer == True)
+    count = db.query(func.count(models.ContentWeb.link)).scalar()
     return response, count
 
 
-def get_content_web_test(db: Session, token: str, filterData: str, page: int, size: int) -> models.ContentWebTest: 
+def get_content_web(db: Session, token: str, filterData: str, page: int, size: int) -> models.ContentWeb: 
                            
     """
     Метод получения контента по пользователю.
@@ -299,7 +298,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
     """
     user = get_user_by_token(db = db, token = token) # Получаем пользователя
 
-    response = db.query(models.ContentWebTest)
+    response = db.query(models.ContentWeb)
 
     if user.is_employee:
 
@@ -312,61 +311,61 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             filters_list_kl = []
 
             if filterData["current"] == True:
-                or_filters.append(models.ContentWebTest.tekuschiy == True)
+                or_filters.append(models.ContentWeb.tekuschiy == True)
 
             if filterData["future"] == True:
-                or_filters.append(models.ContentWebTest.buduschiy == True)
+                or_filters.append(models.ContentWeb.buduschiy == True)
 
             if filterData["past"] == True:
-                or_filters.append(models.ContentWebTest.proshedshiy == True)
+                or_filters.append(models.ContentWeb.proshedshiy == True)
 
             if filterData["withoutMP"] == True:
-                or_filters.append(models.ContentWebTest.bezmp == True)
+                or_filters.append(models.ContentWeb.bezmp == True)
 
             if filterData["adFilter"] == True:
-                or_filters.append(models.ContentWebTest.fonoviy == False)
+                or_filters.append(models.ContentWeb.fonoviy == False)
 
             if filterData["undoneTaskFilter"] == True:
-                or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+                or_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
             if filterData["undoneTaskFilter"] == True:
-                or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+                or_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
             if filterData["onServerFilter"] == True:
-                or_filters.append(models.ContentWebTest.naservere == True)
+                or_filters.append(models.ContentWeb.naservere == True)
 
             if filterData["audioFilter"] == True:
-                or_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Аудио' == any_(models.ContentWeb.filetypes))
 
             if filterData["videoFilter"] == True:
-                or_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Видео' == any_(models.ContentWeb.filetypes))
 
             if filterData["imageFilter"] == True:
-                or_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Картинка' == any_(models.ContentWeb.filetypes))
 
             if filterData["textFilter"] == True:
-                or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Текст' == any_(models.ContentWeb.filetypes))
 
             if filterData["haveScriptFilter"] == True:
-                or_filters.append(models.ContentWebTest.scenariy != '')
+                or_filters.append(models.ContentWeb.scenariy != '')
 
             if filterData["unknownFileTypeFilter"] == True:
-                or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
+                or_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
 
             if filterData["noFileFilter"] == True:
-                or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+                or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
             for item in filterData["brand_list"]:
-                filters_list_brand.append(item == any_(models.ContentWebTest.brand_list))
+                filters_list_brand.append(item == any_(models.ContentWeb.brand_list))
 
             for item in filterData["contragent_list"]:
-                filters_list_contragent.append(item == any_(models.ContentWebTest.contragent_list))
+                filters_list_contragent.append(item == any_(models.ContentWeb.contragent_list))
 
             for item in filterData["kl"]:
-                filters_list_kl.append(item == models.ContentWebTest.kl)
+                filters_list_kl.append(item == models.ContentWeb.kl)
 
             for item in filterData["otvetstvenniy"]:
-                filters_list_otvetstvenniy.append(item == models.ContentWebTest.otvetstvenniy)
+                filters_list_otvetstvenniy.append(item == models.ContentWeb.otvetstvenniy)
 
             if len(or_filters) == 0:
                 or_filters.append(True)
@@ -383,17 +382,17 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
             if len(filters_list_otvetstvenniy) == 0:
                 filters_list_otvetstvenniy.append(True)
 
-            response = response.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
+            response = response.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) | (models.ContentWeb.primer == True))
 
         else:
  
             # Разбиваем поиск на отдельные проверки для каждого поля
-            brand_filter = func.array_to_string(models.ContentWebTest.brand_list, ';').ilike(f'%{filterData["search"]}%')
-            contragent_filter =  func.array_to_string(models.ContentWebTest.contragent_list, ';').ilike(f'%{filterData["search"]}%')
+            brand_filter = func.array_to_string(models.ContentWeb.brand_list, ';').ilike(f'%{filterData["search"]}%')
+            contragent_filter =  func.array_to_string(models.ContentWeb.contragent_list, ';').ilike(f'%{filterData["search"]}%')
 
-            contentkod_filter = models.ContentWebTest.contentkod.ilike(f'%{filterData["search"]}%')
-            contactperson_filter = models.ContentWebTest.kl.ilike(f'%{filterData["search"]}%')
-            naimenovanie_filter = models.ContentWebTest.naimenovanie.ilike(f'%{filterData["search"]}%')
+            contentkod_filter = models.ContentWeb.contentkod.ilike(f'%{filterData["search"]}%')
+            contactperson_filter = models.ContentWeb.kl.ilike(f'%{filterData["search"]}%')
+            naimenovanie_filter = models.ContentWeb.naimenovanie.ilike(f'%{filterData["search"]}%')
 
             # Объединяем все фильтры с оператором ИЛИ (|)
             combined_filter = brand_filter | contentkod_filter | contragent_filter | contactperson_filter | naimenovanie_filter
@@ -405,7 +404,7 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
 
         max_page = count//size + 1
 
-        response = response.order_by(models.ContentWebTest.primer.desc(), models.ContentWebTest.datasozdaniya.desc())
+        response = response.order_by(models.ContentWeb.primer.desc(), models.ContentWeb.datasozdaniya.desc())
 
         unic_list = response.limit(size).offset(page * size).all()
         
@@ -442,46 +441,46 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 filters_list_kl = []
 
                 if filterData["current"] == True:
-                    or_filters.append(models.ContentWebTest.tekuschiy == True)
+                    or_filters.append(models.ContentWeb.tekuschiy == True)
 
                 if filterData["future"] == True:
-                    or_filters.append(models.ContentWebTest.buduschiy == True)
+                    or_filters.append(models.ContentWeb.buduschiy == True)
 
                 if filterData["past"] == True:
-                    or_filters.append(models.ContentWebTest.proshedshiy == True)
+                    or_filters.append(models.ContentWeb.proshedshiy == True)
 
                 if filterData["withoutMP"] == True:
-                    or_filters.append(models.ContentWebTest.bezmp == True)
+                    or_filters.append(models.ContentWeb.bezmp == True)
 
                 if filterData["adFilter"] == True:
-                    or_filters.append(models.ContentWebTest.fonoviy == False)
+                    or_filters.append(models.ContentWeb.fonoviy == False)
 
                 if filterData["undoneTaskFilter"] == True:
-                    or_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+                    or_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
                 if filterData["onServerFilter"] == True:
-                    or_filters.append(models.ContentWebTest.naservere == True)
+                    or_filters.append(models.ContentWeb.naservere == True)
 
                 if filterData["haveScriptFilter"] == True:
-                    or_filters.append(models.ContentWebTest.scenariy != '')
+                    or_filters.append(models.ContentWeb.scenariy != '')
 
                 if filterData["noFileFilter"] == True:
-                    or_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+                    or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
                 if filterData["audioFilter"] == True:
-                    or_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Аудио' == any_(models.ContentWeb.filetypes))
 
                 if filterData["videoFilter"] == True:
-                    or_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Видео' == any_(models.ContentWeb.filetypes))
 
                 if filterData["imageFilter"] == True:
-                    or_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Картинка' == any_(models.ContentWeb.filetypes))
 
                 if filterData["textFilter"] == True:
-                    or_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Текст' == any_(models.ContentWeb.filetypes))
 
                 if filterData["unknownFileTypeFilter"] == True:
-                    or_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
+                    or_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
 
                 if len(or_filters) == 0:
                     or_filters.append(True)
@@ -498,10 +497,10 @@ def get_content_web_test(db: Session, token: str, filterData: str, page: int, si
                 if len(filters_list_otvetstvenniy) == 0:
                     filters_list_otvetstvenniy.append(True)
 
-                subresponse = subresponse.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
+                subresponse = subresponse.filter(and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) | (models.ContentWeb.primer == True))
 
         
-            count = db.execute(select(func.count()).select_from(subresponse.alias()).order_by(models.ContentWebTest.primer.desc())).scalar()
+            count = db.execute(select(func.count()).select_from(subresponse.alias()).order_by(models.ContentWeb.primer.desc())).scalar()
 
             response = db.execute(response.limit(size).offset(page * size)).scalars().unique().all()
 
@@ -526,7 +525,7 @@ def get_content_filters(
         response_of_additional_sort = select(models.Contragent.full_name).filter(models.Contragent.link.in_(contrangents)).group_by(models.Contragent.full_name)
         result = db.execute(response_of_additional_sort)
         for item in result:
-            additional_filter.append(item.full_name == any_(models.ContentWebTest.contragent_list))
+            additional_filter.append(item.full_name == any_(models.ContentWeb.contragent_list))
 
     filters_list = []
     filters_list_excluded_current = []
@@ -545,57 +544,57 @@ def get_content_filters(
                 for list_filter in data["filters_list"][filter]:
 
                     if filter == "brand_list":
-                        filters_list_brand.append(list_filter == any_(models.ContentWebTest.brand_list))    
+                        filters_list_brand.append(list_filter == any_(models.ContentWeb.brand_list))    
                     elif filter == "contragent_list":
-                        filters_list_contragent.append(list_filter == any_(models.ContentWebTest.contragent_list))
+                        filters_list_contragent.append(list_filter == any_(models.ContentWeb.contragent_list))
                     elif filter == "otvetstvenniy":
-                        filters_list_otvetstvenniy.append(models.ContentWebTest.otvetstvenniy == list_filter)
+                        filters_list_otvetstvenniy.append(models.ContentWeb.otvetstvenniy == list_filter)
                     elif filter == "kl":
-                        filters_list_kl.append(models.ContentWebTest.kl == list_filter)
+                        filters_list_kl.append(models.ContentWeb.kl == list_filter)
 
         if type(data[input_parameter]) == type(True) and data[input_parameter]:
 
             if input_parameter == "showCurrent":
-                flag_filters.append(models.ContentWebTest.tekuschiy == True)
+                flag_filters.append(models.ContentWeb.tekuschiy == True)
 
             if input_parameter == "showFuture":
-                flag_filters.append(models.ContentWebTest.buduschiy == True)
+                flag_filters.append(models.ContentWeb.buduschiy == True)
 
             if input_parameter == "showPast":
-                flag_filters.append(models.ContentWebTest.proshedshiy == True)
+                flag_filters.append(models.ContentWeb.proshedshiy == True)
 
             if input_parameter == "showWithoutMP":
-                flag_filters.append(models.ContentWebTest.bezmp == True)
+                flag_filters.append(models.ContentWeb.bezmp == True)
 
             if input_parameter == "showAdFilter":
-                flag_filters.append(models.ContentWebTest.fonoviy == False)
+                flag_filters.append(models.ContentWeb.fonoviy == False)
 
             if input_parameter == "showUndoneTaskFilter":
-                flag_filters.append(models.ContentWebTest.nevypolnennyezadachi == True)
+                flag_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
             if input_parameter == "showOnServerFilter":
-                flag_filters.append(models.ContentWebTest.naservere == True)
+                flag_filters.append(models.ContentWeb.naservere == True)
 
             if input_parameter == "showNoFileFilter":
-                flag_filters.append(models.ContentWebTest.rasshireniefailacontenta == '')
+                flag_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
             if input_parameter == "showHaveScriptFilter":
-                flag_filters.append(models.ContentWebTest.scenariy != '')
+                flag_filters.append(models.ContentWeb.scenariy != '')
 
             if input_parameter == "showAudioFilter":
-                flag_filters.append('Аудио' == any_(models.ContentWebTest.filetypes))
+                flag_filters.append('Аудио' == any_(models.ContentWeb.filetypes))
 
             if input_parameter == "showVideoFilter":
-                flag_filters.append('Видео' == any_(models.ContentWebTest.filetypes))
+                flag_filters.append('Видео' == any_(models.ContentWeb.filetypes))
 
             if input_parameter == "showImageFilter":
-                flag_filters.append('Картинка' == any_(models.ContentWebTest.filetypes))
+                flag_filters.append('Картинка' == any_(models.ContentWeb.filetypes))
 
             if input_parameter == "showTextFilter":
-                flag_filters.append('Текст' == any_(models.ContentWebTest.filetypes))
+                flag_filters.append('Текст' == any_(models.ContentWeb.filetypes))
 
             if input_parameter == "showUnknownFileTypeFilter":
-                flag_filters.append('Неопределено' == any_(models.ContentWebTest.filetypes))
+                flag_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
 
     if len(flag_filters) == 0:
         flag_filters.append(True)
@@ -636,18 +635,18 @@ def get_content_filters(
                    "showUndoneTaskFilter":[], "showHaveScriptFilter":[], "showAdFilter":[], "showOnServerFilter":[]}
 
     if data["current_filter"] == "otvetstvenniy":
-        response_of_responsibles = select(models.ContentWebTest.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWebTest.otvetstvenniy)
+        response_of_responsibles = select(models.ContentWeb.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWeb.otvetstvenniy)
     else:
-        response_of_responsibles = select(models.ContentWebTest.otvetstvenniy).filter(filters_list).group_by(models.ContentWebTest.otvetstvenniy)
+        response_of_responsibles = select(models.ContentWeb.otvetstvenniy).filter(filters_list).group_by(models.ContentWeb.otvetstvenniy)
 
     result = db.execute(response_of_responsibles)
     for item in result:
         return_dict["otvetstvenniy"].append(item.otvetstvenniy) if not item.otvetstvenniy in data["filters_list"]['otvetstvenniy'] else True
 
     if data["current_filter"] == "brand_list":
-        response_of_brand = select(models.ContentWebTest.brand_list).filter(filters_list_excluded_current).group_by(models.ContentWebTest.brand_list)
+        response_of_brand = select(models.ContentWeb.brand_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.brand_list)
     else:
-        response_of_brand = select(models.ContentWebTest.brand_list).filter(filters_list).group_by(models.ContentWebTest.brand_list)
+        response_of_brand = select(models.ContentWeb.brand_list).filter(filters_list).group_by(models.ContentWeb.brand_list)
 
     result = db.execute(response_of_brand)
     for item in result:
@@ -655,9 +654,9 @@ def get_content_filters(
             return_dict["brand_list"].append(brand) if not return_dict["brand_list"].__contains__(brand) and not brand in data["filters_list"]['brand_list'] else True
 
     if data["current_filter"] == "contragent_list":
-        response_of_contragent = select(models.ContentWebTest.contragent_list).filter(filters_list_excluded_current).group_by(models.ContentWebTest.contragent_list)
+        response_of_contragent = select(models.ContentWeb.contragent_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.contragent_list)
     else:
-        response_of_contragent = select(models.ContentWebTest.contragent_list).filter(filters_list).group_by(models.ContentWebTest.contragent_list)
+        response_of_contragent = select(models.ContentWeb.contragent_list).filter(filters_list).group_by(models.ContentWeb.contragent_list)
 
     result = db.execute(response_of_contragent)
     for item in result:
@@ -665,16 +664,16 @@ def get_content_filters(
             return_dict["contragent_list"].append(contragent) if not return_dict["contragent_list"].__contains__(contragent) and not contragent in data["filters_list"]['contragent_list'] else True
 
     if data["current_filter"] == "kl":
-        response_of_kl = select(models.ContentWebTest.kl).filter(filters_list_excluded_current).group_by(models.ContentWebTest.kl)
+        response_of_kl = select(models.ContentWeb.kl).filter(filters_list_excluded_current).group_by(models.ContentWeb.kl)
     else:
-        response_of_kl = select(models.ContentWebTest.kl).filter(filters_list).group_by(models.ContentWebTest.kl)
+        response_of_kl = select(models.ContentWeb.kl).filter(filters_list).group_by(models.ContentWeb.kl)
 
     result = db.execute(response_of_kl)
     for item in result:
         return_dict["kl"].append(item.kl) if not item.kl in data["filters_list"]['kl'] else True
 
-    subq = select(models.ContentWebTest.tekuschiy).filter(filters_list).group_by(models.ContentWebTest.tekuschiy).subquery()
-    subq_only_false = select(models.ContentWebTest.tekuschiy).filter(filters_list & (models.ContentWebTest.tekuschiy == False)).group_by(models.ContentWebTest.tekuschiy).subquery()
+    subq = select(models.ContentWeb.tekuschiy).filter(filters_list).group_by(models.ContentWeb.tekuschiy).subquery()
+    subq_only_false = select(models.ContentWeb.tekuschiy).filter(filters_list & (models.ContentWeb.tekuschiy == False)).group_by(models.ContentWeb.tekuschiy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.tekuschiy))
     result = db.execute(response_of_current)
@@ -688,8 +687,8 @@ def get_content_filters(
         return_dict["showCurrent"] = not (item.count == 1 and only_false) 
         break
     
-    subq = select(models.ContentWebTest.buduschiy).filter(filters_list).group_by(models.ContentWebTest.buduschiy).subquery()
-    subq_only_false = select(models.ContentWebTest.buduschiy).filter(filters_list & (models.ContentWebTest.buduschiy == False)).group_by(models.ContentWebTest.buduschiy).subquery()
+    subq = select(models.ContentWeb.buduschiy).filter(filters_list).group_by(models.ContentWeb.buduschiy).subquery()
+    subq_only_false = select(models.ContentWeb.buduschiy).filter(filters_list & (models.ContentWeb.buduschiy == False)).group_by(models.ContentWeb.buduschiy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.buduschiy))
     result = db.execute(response_of_current)
@@ -703,8 +702,8 @@ def get_content_filters(
         return_dict["showFuture"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.proshedshiy).filter(filters_list).group_by(models.ContentWebTest.proshedshiy).subquery()
-    subq_only_false = select(models.ContentWebTest.proshedshiy).filter(filters_list & (models.ContentWebTest.proshedshiy == False)).group_by(models.ContentWebTest.proshedshiy).subquery()
+    subq = select(models.ContentWeb.proshedshiy).filter(filters_list).group_by(models.ContentWeb.proshedshiy).subquery()
+    subq_only_false = select(models.ContentWeb.proshedshiy).filter(filters_list & (models.ContentWeb.proshedshiy == False)).group_by(models.ContentWeb.proshedshiy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.proshedshiy))
     result = db.execute(response_of_current)
@@ -718,8 +717,8 @@ def get_content_filters(
         return_dict["showPast"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.bezmp).filter(filters_list).group_by(models.ContentWebTest.bezmp).subquery()
-    subq_only_false = select(models.ContentWebTest.bezmp).filter(filters_list & (models.ContentWebTest.bezmp == False)).group_by(models.ContentWebTest.bezmp).subquery()
+    subq = select(models.ContentWeb.bezmp).filter(filters_list).group_by(models.ContentWeb.bezmp).subquery()
+    subq_only_false = select(models.ContentWeb.bezmp).filter(filters_list & (models.ContentWeb.bezmp == False)).group_by(models.ContentWeb.bezmp).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.bezmp))
     result = db.execute(response_of_current)
@@ -733,8 +732,8 @@ def get_content_filters(
         return_dict["showWithoutMP"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
-    subq_only_false = select(models.ContentWebTest.nevypolnennyezadachi).filter(filters_list & (models.ContentWebTest.nevypolnennyezadachi == False)).group_by(models.ContentWebTest.nevypolnennyezadachi).subquery()
+    subq = select(models.ContentWeb.nevypolnennyezadachi).filter(filters_list).group_by(models.ContentWeb.nevypolnennyezadachi).subquery()
+    subq_only_false = select(models.ContentWeb.nevypolnennyezadachi).filter(filters_list & (models.ContentWeb.nevypolnennyezadachi == False)).group_by(models.ContentWeb.nevypolnennyezadachi).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.nevypolnennyezadachi))
     result = db.execute(response_of_current)
@@ -748,8 +747,8 @@ def get_content_filters(
         return_dict["showUndoneTaskFilter"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.fonoviy).filter(filters_list).group_by(models.ContentWebTest.fonoviy).subquery()
-    subq_only_false = select(models.ContentWebTest.fonoviy).filter(filters_list & (models.ContentWebTest.fonoviy == True)).group_by(models.ContentWebTest.fonoviy).subquery()
+    subq = select(models.ContentWeb.fonoviy).filter(filters_list).group_by(models.ContentWeb.fonoviy).subquery()
+    subq_only_false = select(models.ContentWeb.fonoviy).filter(filters_list & (models.ContentWeb.fonoviy == True)).group_by(models.ContentWeb.fonoviy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.fonoviy))
     result = db.execute(response_of_current)
@@ -763,8 +762,8 @@ def get_content_filters(
         return_dict["showAdFilter"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.scenariy).filter(filters_list).group_by(models.ContentWebTest.scenariy).subquery()
-    subq_only_false = select(models.ContentWebTest.scenariy).filter(filters_list & (models.ContentWebTest.scenariy == "")).group_by(models.ContentWebTest.scenariy).subquery()
+    subq = select(models.ContentWeb.scenariy).filter(filters_list).group_by(models.ContentWeb.scenariy).subquery()
+    subq_only_false = select(models.ContentWeb.scenariy).filter(filters_list & (models.ContentWeb.scenariy == "")).group_by(models.ContentWeb.scenariy).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.scenariy))
     result = db.execute(response_of_current)
@@ -778,8 +777,8 @@ def get_content_filters(
         return_dict["showHaveScriptFilter"] = not (item.count == 1 and only_false) 
         break
 
-    subq = select(models.ContentWebTest.naservere).filter(filters_list).group_by(models.ContentWebTest.naservere).subquery()
-    subq_only_false = select(models.ContentWebTest.naservere).filter(filters_list & (models.ContentWebTest.naservere == False)).group_by(models.ContentWebTest.naservere).subquery()
+    subq = select(models.ContentWeb.naservere).filter(filters_list).group_by(models.ContentWeb.naservere).subquery()
+    subq_only_false = select(models.ContentWeb.naservere).filter(filters_list & (models.ContentWeb.naservere == False)).group_by(models.ContentWeb.naservere).subquery()
     only_false = False
     response_of_current = select(func.count(subq.c.naservere))
     result = db.execute(response_of_current)
@@ -800,8 +799,8 @@ def get_content_filters(
                   "Неопределено": 0,
                   "Без файла": 0}
     
-    response_of_current = select(models.ContentWebTest.filetypes).filter(filters_list).group_by(models.ContentWebTest.filetypes)
-    response_of_total_type_count = select(func.count(models.ContentWebTest.filetypes)).filter(filters_list)
+    response_of_current = select(models.ContentWeb.filetypes).filter(filters_list).group_by(models.ContentWeb.filetypes)
+    response_of_total_type_count = select(func.count(models.ContentWeb.filetypes)).filter(filters_list)
     result = db.execute(response_of_current)
     result_total_number = db.execute(response_of_total_type_count)
     for item in result_total_number:

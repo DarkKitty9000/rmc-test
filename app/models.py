@@ -190,11 +190,11 @@ class NomenclaturePlacing(Base):
         secondary = 'nomenclature_contragent',
         back_populates ="nomenclatures"
     )
-    contents = relationship(
+    """ contents = relationship(
         "ContentWeb",
         secondary = 'content_nomenclature',
         back_populates="nomenclatures"
-    )
+    ) """
 
 class NomenclatureCV(Base):
     __tablename__ = "nomenclature_cv"
@@ -240,7 +240,7 @@ class NomenclatureCV(Base):
 
 
 
-class ContentWeb(Base):
+"""class ContentWeb(Base):
     __tablename__ = "content_web"
 
     link = Column(String, primary_key=True, unique=True)
@@ -288,10 +288,10 @@ class ContentWeb(Base):
         "NomenclaturePlacing",
         secondary = content_nomenclature,
         back_populates = "contents"
-    )
+    ) """
 
-class ContentWebTest(Base):
-    __tablename__ = "content_web_test"
+class ContentWeb(Base):
+    __tablename__ = "content_web"
 
     link = Column(String, primary_key=True, unique=True)
     bezmp = Column(Boolean)
@@ -352,11 +352,11 @@ class Contragent(Base):
         secondary= contragent_cp,
         back_populates="contragents"
     )
-    contents = relationship(
+    """conte ts = relationship(
         "ContentWeb",
         secondary = content_contragent,
         back_populates = "contragents"
-    )
+    ) """
 
 
 class Brand(Base):
@@ -370,11 +370,11 @@ class Brand(Base):
         secondary = contragent_brand,
         back_populates = "brands"
     )
-    contents = relationship(
+    """ contents = relationship(
         "ContentWeb",
         secondary = content_brand,
         back_populates = "brands"
-    )
+    ) """
 
 
 # Контактные лица.
@@ -394,10 +394,10 @@ class ContactPerson(Base):
         "CPInfo",
         back_populates="contact_persons"
     )
-    contents = relationship(
+    """ contents = relationship(
         "ContentWeb",
         back_populates="contact_persons"
-    )
+    ) """
     nomenclature_cv = relationship(
         "NomenclatureCV",
         secondary = 'nomenclature_cv_cp',
