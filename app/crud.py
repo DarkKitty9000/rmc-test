@@ -650,8 +650,9 @@ def get_content_filters(
 
     result = db.execute(response_of_brand)
     for item in result:
-        for brand in item.brand_list:
-            return_dict["brand_list"].append(brand) if not return_dict["brand_list"].__contains__(brand) and not brand in data["filters_list"]['brand_list'] else True
+        if item.brand_list is not None:
+            for brand in item.brand_list:
+                return_dict["brand_list"].append(brand) if not return_dict["brand_list"].__contains__(brand) and not brand in data["filters_list"]['brand_list'] else True
 
     if data["current_filter"] == "contragent_list":
         response_of_contragent = select(models.ContentWeb.contragent_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.contragent_list)
@@ -660,8 +661,9 @@ def get_content_filters(
 
     result = db.execute(response_of_contragent)
     for item in result:
-        for contragent in item.contragent_list:
-            return_dict["contragent_list"].append(contragent) if not return_dict["contragent_list"].__contains__(contragent) and not contragent in data["filters_list"]['contragent_list'] else True
+        if item.contragent_list is not None:
+            for contragent in item.contragent_list:
+                return_dict["contragent_list"].append(contragent) if not return_dict["contragent_list"].__contains__(contragent) and not contragent in data["filters_list"]['contragent_list'] else True
 
     if data["current_filter"] == "kl":
         response_of_kl = select(models.ContentWeb.kl).filter(filters_list_excluded_current).group_by(models.ContentWeb.kl)
@@ -808,6 +810,9 @@ def get_content_filters(
         break
 
     for item in result:
+        if item.filetypes is None:
+            continue
+
         if len(item.filetypes) == 0:
             type_count["Без файла"] += 1
         
