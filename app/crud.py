@@ -355,6 +355,9 @@ def get_content_web(db: Session, token: str, filterData: str, page: int, size: i
             if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
+            if filterData["isExample"] == True:
+                or_filters.append(models.ContentWeb.primer == True)
+
             for item in filterData["brand_list"]:
                 filters_list_brand.append(item == any_(models.ContentWeb.brand_list))
 
@@ -481,6 +484,9 @@ def get_content_web(db: Session, token: str, filterData: str, page: int, size: i
 
                 if filterData["unknownFileTypeFilter"] == True:
                     or_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
+
+                if filterData["isExample"] == True:
+                    or_filters.append(models.ContentWeb.primer == True)
 
                 if len(or_filters) == 0:
                     or_filters.append(True)
