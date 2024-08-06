@@ -433,6 +433,31 @@ class nomenclature_contragent (Base):
     nomenclature_link = Column(String, ForeignKey('nomenclature_placing.link'), primary_key=True)
     contragent_link = Column(String, ForeignKey('contragent.link'), primary_key=True)
 
+class SaveData(Base):
+    __tablename__ = "save_data"
+
+    token = Column(String, primary_key=True)
+    showvideofilter = Column(Boolean)
+    showcurrent = Column(Boolean)
+    isexample = Column(Boolean)
+    showfuture = Column(Boolean)
+    showpast = Column(Boolean)
+    showwithoutmp = Column(Boolean)
+    showundonetaskfilter = Column(Boolean)
+    showhavescriptfilter = Column(Boolean)
+    showadfilter = Column(Boolean)
+    showonserverfilter = Column(Boolean)
+    showaudiofilter = Column(Boolean)
+    showimagefilter = Column(Boolean)
+    showtextfilter = Column(Boolean)
+    showunknownfiletypefilter = Column(Boolean)
+    shownofilefilter = Column(Boolean)
+    current_filter = Column(String)
+    brand_list = Column(ARRAY(String))
+    contragent_list = Column(ARRAY(String))
+    kl = Column(ARRAY(String))
+    otvetstvenniy = Column(ARRAY(String))
+
 # Промежуточная таблица контрагент - бренд
 # class contragent_brand (Base):
 #     __tablename__ ='contragent_brand'

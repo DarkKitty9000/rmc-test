@@ -144,13 +144,19 @@ async def load_content_web(
     token = xrmccookie
     data = await request.json()
     max_page = 1
- 
+    
+    return_dict = {"brand_list":[], "contragent_list":[], "otvetstvenniy":[], "kl":[], 
+                        "showCurrent":True, "showFuture":True, "showPast":True, "showWithoutMP":True,
+                        "showUndoneTaskFilter":True, "showHaveScriptFilter":True, "showAdFilter":True, "showOnServerFilter":True,
+                        "showAudioFilter":True, "showImageFilter":True, "showTextFilter":True, "showVideoFilter":True,
+                        "showNoFileFilter":True, "showUnknownFileTypeFilter":True}
+    
     if token is None or token == "":
         contents, count = crud.get_content_web_non_auth(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        max_page, contents, count = crud.get_content_web(db = db, token = token, filterData = data, page = page, size = size) 
+        max_page, contents, count, return_dict = crud.get_content_web(db = db, token = token, page = page, size = size, return_dict = return_dict, data = data) 
     temp_list = [] 
     if contents is not None:        
         for element in contents:
@@ -189,7 +195,8 @@ async def load_content_web(
                
         "ОбщееКоличество": count,
         "МаксимальноеКоличествоСтраниц": max_page,
-        'СтрокаТЧ': temp_list
+        'СтрокаТЧ': temp_list,
+        "ВидимостьФильтров": return_dict
     }
     return res     
 
@@ -352,21 +359,17 @@ async def get_nomenclature_cv(
     return res
 
 @app.post('/GetContentFilters')
-async def load_content_web(
+async def get_content_filters(
     request: Request,
     db: Session = Depends(get_db),
     xrmccookie: str = Header(default = None)
 ):
     token = xrmccookie
     data = await request.json()
- 
-    dataset = crud.get_content_filters(db = db, token = token, data = data)
-        
-                                                
-    res = {
-       "filters": dataset 
-    }
-    return res
+    
+    error_status = crud.save_data(data, db, token)
+
+    return error_status
 
 
 if __name__ == "__main__":
