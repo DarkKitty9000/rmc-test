@@ -367,9 +367,12 @@ async def get_content_filters(
     token = xrmccookie
     data = await request.json()
     
-    error_status = crud.save_data(data, db, token)
+    save_status = crud.save_data(data, db, token)
 
-    return error_status
+    return_dict = {
+        "save_status": save_status
+    }
+    return return_dict
 
 
 if __name__ == "__main__":

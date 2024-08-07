@@ -950,7 +950,8 @@ def save_data(
         db: Session,
         token: str
     ):
-    error_status = 0
+
+    save_status = True
     
     save_data_set = {}
     save_data_set["token"] = token
@@ -958,16 +959,18 @@ def save_data(
     for key in data:
         save_data_set[key.lower()] = data[key]  
 
-    delete_request = delete(models.SaveData).where(models.SaveData.token == token)
-    db.execute(delete_request)
-    insert_request = insert(models.SaveData).values(save_data_set)
-    print(insert_request)
-    print(insert_request.params)
-    db.execute(insert_request)
-    db.commit()
-    #error_status = 1
+    try:
+        delete_request = delete(models.SaveData).where(models.SaveData.token == token)
+        db.execute(delete_request)
+        insert_request = insert(models.SaveData).values(save_data_set)
+        print(insert_request)
+        print(insert_request.params)
+        db.execute(insert_request)
+        db.commit()
+    except:
+        save_status = False
 
-    return error_status
+    return save_status
 
 def get_filters_by_saved_data(
         db: Session,
@@ -1028,6 +1031,6 @@ def get_base_dict():
             "contragent_list": [],
             "kl": [],
             "otvetstvenniy": [],
-            "isExample": False,
+            "isExample": True,
             "search": ""
         }
