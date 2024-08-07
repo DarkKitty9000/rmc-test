@@ -149,7 +149,7 @@ async def load_content_web(
                         "showCurrent":True, "showFuture":True, "showPast":True, "showWithoutMP":True,
                         "showUndoneTaskFilter":True, "showHaveScriptFilter":True, "showAdFilter":True, "showOnServerFilter":True,
                         "showAudioFilter":True, "showImageFilter":True, "showTextFilter":True, "showVideoFilter":True,
-                        "showNoFileFilter":True, "showUnknownFileTypeFilter":True}
+                        "showNoFileFilter":True, "showUnknownFileTypeFilter":True, "isExample":True}
     
     if token is None or token == "":
         contents, count = crud.get_content_web_non_auth(db=db)

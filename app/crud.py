@@ -603,7 +603,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0)
         return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0)
 
-
+        return_dict["isExample"] = True
         count = response.count()
 
         max_page = count//size + 1
@@ -929,6 +929,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             return_dict["showUnknownFileTypeFilter"] = (type_count["Неопределено"] > 0)
             return_dict["showNoFileFilter"] = (type_count["Без файла"] > 0)
 
+            return_dict["isExample"] = True
+            
             response = response.filter(or_(*combined_filter) & and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) & or_(*additional_filter) | (models.ContentWeb.primer == True))
 
             count = response.count()
