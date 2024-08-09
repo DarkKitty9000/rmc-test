@@ -953,24 +953,26 @@ def save_data(
         token: str
     ):
 
+    
     save_status = True
     
-    save_data_set = {}
-    save_data_set["token"] = token
-    
-    for key in data:
-        save_data_set[key.lower()] = data[key]  
+    if not (token is None or token == ""):
+        save_data_set = {}
+        save_data_set["token"] = token
+        
+        for key in data:
+            save_data_set[key.lower()] = data[key]  
 
-    try:
-        delete_request = delete(models.SaveData).where(models.SaveData.token == token)
-        db.execute(delete_request)
-        insert_request = insert(models.SaveData).values(save_data_set)
-        print(insert_request)
-        print(insert_request.params)
-        db.execute(insert_request)
-        db.commit()
-    except:
-        save_status = False
+        try:
+            delete_request = delete(models.SaveData).where(models.SaveData.token == token)
+            db.execute(delete_request)
+            insert_request = insert(models.SaveData).values(save_data_set)
+            print(insert_request)
+            print(insert_request.params)
+            db.execute(insert_request)
+            db.commit()
+        except:
+            save_status = False
 
     return save_status
 
