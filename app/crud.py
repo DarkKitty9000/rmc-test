@@ -1036,6 +1036,6 @@ def get_base_dict():
             "contragent_list": [],
             "kl": [],
             "otvetstvenniy": [],
-            "isExample": True,
+            "isExample": False,
             "search": ""
         }
