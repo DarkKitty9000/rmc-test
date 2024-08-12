@@ -151,12 +151,17 @@ async def load_content_web(
                         "showAudioFilter":True, "showImageFilter":True, "showTextFilter":True, "showVideoFilter":True,
                         "showNoFileFilter":True, "showUnknownFileTypeFilter":True, "isExample":True}
     
+    filterData = {"brand_list":[], "contragent_list":[], "otvetstvenniy":[], "kl":[], 
+                        "current":False, "future":False, "past":False, "withoutMP":False,
+                        "undoneTaskFilter":False, "haveScriptFilter":False, "adFilter":True, "onServerFilter":False,
+                        "audioFilter":False, "imageFilter":False, "textFilter":False, "videoFilter":False,
+                        "noFileFilter":False, "unknownFileTypeFilter":False, "isExample":False}
     if token is None or token == "":
         contents, count = crud.get_content_web_non_auth(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")
     
     else:
-        max_page, contents, count, return_dict = crud.get_content_web(db = db, token = token, page = page, size = size, return_dict = return_dict, data = data) 
+        max_page, contents, count, return_dict, filterData = crud.get_content_web(db = db, token = token, page = page, size = size, return_dict = return_dict, data = data) 
     temp_list = [] 
     if contents is not None:        
         for element in contents:
@@ -196,7 +201,8 @@ async def load_content_web(
         "ОбщееКоличество": count,
         "МаксимальноеКоличествоСтраниц": max_page,
         'СтрокаТЧ': temp_list,
-        "ВидимостьФильтров": return_dict
+        "ВидимостьФильтров": return_dict,
+        "ЗначенияФильтров": filterData
     }
     return res     
 

@@ -612,7 +612,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
 
         unic_list = response.limit(size).offset(page * size).all()
 
-        return max_page, unic_list, count, return_dict 
+        return max_page, unic_list, count, return_dict, filterData 
     
     else:
     # Получаем всех контрагентов по пользователю.
@@ -941,7 +941,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
 
             unic_list = response.limit(size).offset(page * size).all()
             
-            return max_page, unic_list, count, return_dict
+            return max_page, unic_list, count, return_dict, filterData
         
         except Exception as e:
             print(f"Error occurred: in get_content {e}")
@@ -956,12 +956,13 @@ def save_data(
     
     save_status = True
     
-    if not (token is None or token == ""):
+    if not (token is None or token == "") and data["needToSave"]:
         save_data_set = {}
         save_data_set["token"] = token
         
         for key in data:
-            save_data_set[key.lower()] = data[key]  
+            if key != "needToSave":
+                save_data_set[key.lower()] = data[key]   
 
         try:
             delete_request = delete(models.SaveData).where(models.SaveData.token == token)
