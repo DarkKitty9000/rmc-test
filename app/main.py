@@ -155,7 +155,7 @@ async def load_content_web(
                         "current":False, "future":False, "past":False, "withoutMP":False,
                         "undoneTaskFilter":False, "haveScriptFilter":False, "adFilter":True, "onServerFilter":False,
                         "audioFilter":False, "imageFilter":False, "textFilter":False, "videoFilter":False,
-                        "noFileFilter":False, "unknownFileTypeFilter":False, "isExample":False}
+                        "noFileFilter":False, "unknownFileTypeFilter":False, "isExample":True}
     if token is None or token == "":
         contents, count = crud.get_content_web_non_auth(db=db)
         # raise HTTPException(status_code=401, detail="Empty token")

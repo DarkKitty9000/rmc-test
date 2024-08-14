@@ -365,8 +365,9 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         if filterData["noFileFilter"] == True:
             or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
-        if filterData["isExample"] == True:
-            or_filters.append(models.ContentWeb.primer == True)
+        #if filterData["isExample"] == True:
+        #    or_filters.append(models.ContentWeb.primer == True)
+        or_filters.append(models.ContentWeb.primer == False)
 
         for item in filterData["brand_list"]:
             filters_list_brand.append(item == any_(models.ContentWeb.brand_list))
@@ -379,7 +380,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
 
         for item in filterData["otvetstvenniy"]:
             filters_list_otvetstvenniy.append(item == models.ContentWeb.otvetstvenniy)
-
+        
         if len(or_filters) == 0:
             or_filters.append(True)
 
@@ -414,6 +415,9 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         elif filterData["current_filter"] == "kl":
             
             filters_list_excluded_current = or_(*combined_filter) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*or_filters)
+
+        if filterData["isExample"]:
+            response = response.union(db.query(models.ContentWeb).filter(models.ContentWeb.primer == True))
 
         if filterData["current_filter"] == "otvetstvenniy":
             response_of_responsibles = select(models.ContentWeb.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWeb.otvetstvenniy)
@@ -693,8 +697,9 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
-            if filterData["isExample"] == True:
-                or_filters.append(models.ContentWeb.primer == True)
+            #if filterData["isExample"] == True:
+            #    or_filters.append(models.ContentWeb.primer == True)
+            or_filters.append(models.ContentWeb.primer == False)    
 
             for item in filterData["brand_list"]:
                 filters_list_brand.append(item == any_(models.ContentWeb.brand_list))
@@ -743,6 +748,9 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             elif filterData["current_filter"] == "kl":
                 
                 filters_list_excluded_current = or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*or_filters) & or_(*additional_filter)
+
+            if filterData["isExample"]:
+                response = response.union(db.query(models.ContentWeb).filter(models.ContentWeb.primer == True))
 
             if filterData["current_filter"] == "otvetstvenniy":
                 response_of_responsibles = select(models.ContentWeb.otvetstvenniy).filter(filters_list_excluded_current).group_by(models.ContentWeb.otvetstvenniy)
