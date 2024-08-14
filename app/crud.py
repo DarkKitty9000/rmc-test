@@ -323,46 +323,46 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         filters_list_otvetstvenniy = []
         filters_list_kl = []
 
-        if filterData["showCurrent"] == True:
+        if filterData["current"] == True:
             or_filters.append(models.ContentWeb.tekuschiy == True)
 
-        if filterData["showFuture"] == True:
+        if filterData["future"] == True:
             or_filters.append(models.ContentWeb.buduschiy == True)
 
-        if filterData["showPast"] == True:
+        if filterData["past"] == True:
             or_filters.append(models.ContentWeb.proshedshiy == True)
 
-        if filterData["showWithoutMP"] == True:
+        if filterData["withoutMP"] == True:
             or_filters.append(models.ContentWeb.bezmp == True)
 
-        if filterData["showAdFilter"] == True:
+        if filterData["adFilter"] == True:
             or_filters.append(models.ContentWeb.fonoviy == False)
 
-        if filterData["showUndoneTaskFilter"] == True:
+        if filterData["undoneTaskFilter"] == True:
             or_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
-        if filterData["showOnServerFilter"] == True:
+        if filterData["onServerFilter"] == True:
             or_filters.append(models.ContentWeb.naservere == True)
 
-        if filterData["showAudioFilter"] == True:
+        if filterData["audioFilter"] == True:
             or_filters.append('Аудио' == any_(models.ContentWeb.filetypes))
 
-        if filterData["showVideoFilter"] == True:
+        if filterData["videoFilter"] == True:
             or_filters.append('Видео' == any_(models.ContentWeb.filetypes))
 
-        if filterData["showImageFilter"] == True:
+        if filterData["imageFilter"] == True:
             or_filters.append('Картинка' == any_(models.ContentWeb.filetypes))
 
-        if filterData["showTextFilter"] == True:
+        if filterData["textFilter"] == True:
             or_filters.append('Текст' == any_(models.ContentWeb.filetypes))
 
-        if filterData["showHaveScriptFilter"] == True:
+        if filterData["haveScriptFilter"] == True:
             or_filters.append(models.ContentWeb.scenariy != '')
 
-        if filterData["showUnknownFileTypeFilter"] == True:
+        if filterData["unknownFileTypeFilter"] == True:
             or_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
 
-        if filterData["showNoFileFilter"] == True:
+        if filterData["noFileFilter"] == True:
             or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
         if filterData["isExample"] == True:
@@ -395,7 +395,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         if len(filters_list_otvetstvenniy) == 0:
             filters_list_otvetstvenniy.append(True)
 
-        response = response.filter(or_(*combined_filter) & and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) | (models.ContentWeb.primer == True))
+        response = response.filter(or_(*combined_filter) & and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy))
 
         filters_list = or_(*combined_filter) & or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*or_filters)
         
@@ -424,6 +424,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         for item in result:
             return_dict["otvetstvenniy"].append(item.otvetstvenniy) if not item.otvetstvenniy in filterData['otvetstvenniy'] else True
 
+        return_dict["otvetstvenniy"] = sorted(return_dict["otvetstvenniy"])  
+
         if filterData["current_filter"] == "brand_list":
             response_of_brand = select(models.ContentWeb.brand_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.brand_list)
         else:
@@ -435,6 +437,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
                 for brand in item.brand_list:
                     return_dict["brand_list"].append(brand) if not return_dict["brand_list"].__contains__(brand) and not brand in filterData['brand_list'] else True
 
+        return_dict["brand_list"] = sorted(return_dict["brand_list"])  
+        
         if filterData["current_filter"] == "contragent_list":
             response_of_contragent = select(models.ContentWeb.contragent_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.contragent_list)
         else:
@@ -446,6 +450,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
                 for contragent in item.contragent_list:
                     return_dict["contragent_list"].append(contragent) if not return_dict["contragent_list"].__contains__(contragent) and not contragent in filterData['contragent_list'] else True
 
+        return_dict["contragent_list"] = sorted(return_dict["contragent_list"])  
+        
         if filterData["current_filter"] == "kl":
             response_of_kl = select(models.ContentWeb.kl).filter(filters_list_excluded_current).group_by(models.ContentWeb.kl)
         else:
@@ -455,6 +461,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
         for item in result:
             return_dict["kl"].append(item.kl) if not item.kl in filterData['kl'] else True
 
+        return_dict["kl"] = sorted(return_dict["kl"])  
+        
         subq = select(models.ContentWeb.tekuschiy).filter(filters_list).group_by(models.ContentWeb.tekuschiy).subquery()
         subq_only_false = select(models.ContentWeb.tekuschiy).filter(filters_list & (models.ContentWeb.tekuschiy == False)).group_by(models.ContentWeb.tekuschiy).subquery()
         only_false = False
@@ -643,46 +651,46 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             filters_list_otvetstvenniy = []
             filters_list_kl = []
 
-            if filterData["showCurrent"] == True:
+            if filterData["current"] == True:
                 or_filters.append(models.ContentWeb.tekuschiy == True)
 
-            if filterData["showFuture"] == True:
+            if filterData["future"] == True:
                 or_filters.append(models.ContentWeb.buduschiy == True)
 
-            if filterData["showPast"] == True:
+            if filterData["past"] == True:
                 or_filters.append(models.ContentWeb.proshedshiy == True)
 
-            if filterData["showWithoutMP"] == True:
+            if filterData["withoutMP"] == True:
                 or_filters.append(models.ContentWeb.bezmp == True)
 
-            if filterData["showAdFilter"] == True:
+            if filterData["adFilter"] == True:
                 or_filters.append(models.ContentWeb.fonoviy == False)
 
-            if filterData["showUndoneTaskFilter"] == True:
+            if filterData["undoneTaskFilter"] == True:
                 or_filters.append(models.ContentWeb.nevypolnennyezadachi == True)
 
-            if filterData["showOnServerFilter"] == True:
+            if filterData["onServerFilter"] == True:
                 or_filters.append(models.ContentWeb.naservere == True)
 
-            if filterData["showAudioFilter"] == True:
+            if filterData["audioFilter"] == True:
                 or_filters.append('Аудио' == any_(models.ContentWeb.filetypes))
 
-            if filterData["showVideoFilter"] == True:
+            if filterData["videoFilter"] == True:
                 or_filters.append('Видео' == any_(models.ContentWeb.filetypes))
 
-            if filterData["showImageFilter"] == True:
+            if filterData["imageFilter"] == True:
                 or_filters.append('Картинка' == any_(models.ContentWeb.filetypes))
 
-            if filterData["showTextFilter"] == True:
+            if filterData["textFilter"] == True:
                 or_filters.append('Текст' == any_(models.ContentWeb.filetypes))
 
-            if filterData["showHaveScriptFilter"] == True:
+            if filterData["haveScriptFilter"] == True:
                 or_filters.append(models.ContentWeb.scenariy != '')
 
-            if filterData["showUnknownFileTypeFilter"] == True:
+            if filterData["unknownFileTypeFilter"] == True:
                 or_filters.append('Неопределено' == any_(models.ContentWeb.filetypes))
 
-            if filterData["showNoFileFilter"] == True:
+            if filterData["noFileFilter"] == True:
                 or_filters.append(models.ContentWeb.rasshireniefailacontenta == '')
 
             if filterData["isExample"] == True:
@@ -716,7 +724,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
                 filters_list_otvetstvenniy.append(True)
 
             if len(additional_filter) == 0:
-                additional_filter.append(True)
+                additional_filter.append(False)
 
             filters_list = or_(*filters_list_kl) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_otvetstvenniy) & and_(*or_filters) & or_(*additional_filter)
         
@@ -745,6 +753,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             for item in result:
                 return_dict["otvetstvenniy"].append(item.otvetstvenniy) if not item.otvetstvenniy in filterData['otvetstvenniy'] else True
 
+            return_dict["otvetstvenniy"] = sorted(return_dict["otvetstvenniy"])  
+
             if filterData["current_filter"] == "brand_list":
                 response_of_brand = select(models.ContentWeb.brand_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.brand_list)
             else:
@@ -756,6 +766,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
                     for brand in item.brand_list:
                         return_dict["brand_list"].append(brand) if not return_dict["brand_list"].__contains__(brand) and not brand in filterData['brand_list'] else True
 
+            return_dict["brand_list"] = sorted(return_dict["brand_list"])  
+            
             if filterData["current_filter"] == "contragent_list":
                 response_of_contragent = select(models.ContentWeb.contragent_list).filter(filters_list_excluded_current).group_by(models.ContentWeb.contragent_list)
             else:
@@ -767,6 +779,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
                     for contragent in item.contragent_list:
                         return_dict["contragent_list"].append(contragent) if not return_dict["contragent_list"].__contains__(contragent) and not contragent in filterData['contragent_list'] else True
 
+            return_dict["contragent_list"] = sorted(return_dict["contragent_list"])  
+            
             if filterData["current_filter"] == "kl":
                 response_of_kl = select(models.ContentWeb.kl).filter(filters_list_excluded_current).group_by(models.ContentWeb.kl)
             else:
@@ -775,6 +789,8 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
             result = db.execute(response_of_kl)
             for item in result:
                 return_dict["kl"].append(item.kl) if not item.kl in filterData['kl'] else True
+
+            return_dict["kl"] = sorted(return_dict["kl"])
 
             subq = select(models.ContentWeb.tekuschiy).filter(filters_list).group_by(models.ContentWeb.tekuschiy).subquery()
             subq_only_false = select(models.ContentWeb.tekuschiy).filter(filters_list & (models.ContentWeb.tekuschiy == False)).group_by(models.ContentWeb.tekuschiy).subquery()
@@ -931,7 +947,7 @@ def get_content_web(db: Session, token: str, page: int, size: int, return_dict: 
 
             return_dict["isExample"] = True
             
-            response = response.filter(or_(*combined_filter) & and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) & or_(*additional_filter) | (models.ContentWeb.primer == True))
+            response = response.filter(or_(*combined_filter) & and_(*or_filters) & or_(*filters_list_brand) & or_(*filters_list_contragent) & or_(*filters_list_kl) & or_(*filters_list_otvetstvenniy) & or_(*additional_filter))
 
             count = response.count()
 
@@ -989,20 +1005,20 @@ def get_filters_by_saved_data(
         filters = db.execute(response).scalars().unique().all()
         for item in filters:
             return_dict = {
-                            "showVideoFilter": item.showvideofilter,
-                            "showCurrent": item.showcurrent,
-                            "showFuture": item.showfuture,
-                            "showPast": item.showpast,
-                            "showWithoutMP": item.showwithoutmp,
-                            "showUndoneTaskFilter": item.showundonetaskfilter,
-                            "showHaveScriptFilter": item.showhavescriptfilter,
-                            "showAdFilter": item.showadfilter,
-                            "showOnServerFilter": item.showonserverfilter,
-                            "showAudioFilter": item.showaudiofilter,
-                            "showImageFilter": item.showimagefilter,
-                            "showTextFilter": item.showtextfilter,
-                            "showUnknownFileTypeFilter": item.showunknownfiletypefilter,
-                            "showNoFileFilter": item.shownofilefilter,
+                            "videoFilter": item.showvideofilter,
+                            "current": item.showcurrent,
+                            "future": item.showfuture,
+                            "past": item.showpast,
+                            "withoutMP": item.showwithoutmp,
+                            "undoneTaskFilter": item.showundonetaskfilter,
+                            "haveScriptFilter": item.showhavescriptfilter,
+                            "adFilter": item.showadfilter,
+                            "onServerFilter": item.showonserverfilter,
+                            "audioFilter": item.showaudiofilter,
+                            "imageFilter": item.showimagefilter,
+                            "textFilter": item.showtextfilter,
+                            "unknownFileTypeFilter": item.showunknownfiletypefilter,
+                            "noFileFilter": item.shownofilefilter,
                             "current_filter": item.current_filter,
                             "brand_list": item.brand_list,
                             "contragent_list": item.contragent_list,
@@ -1017,20 +1033,20 @@ def get_filters_by_saved_data(
 def get_base_dict():
 
     return {
-            "showVideoFilter": False,
-            "showCurrent": False,
-            "showFuture": False,
-            "showPast": False,
-            "showWithoutMP": False,
-            "showUndoneTaskFilter": False,
-            "showHaveScriptFilter": False,
-            "showAdFilter": True,
-            "showOnServerFilter": False,
-            "showAudioFilter": False,
-            "showImageFilter": False,
-            "showTextFilter": False,
-            "showUnknownFileTypeFilter": False,
-            "showNoFileFilter": False,
+            "videoFilter": False,
+            "current": False,
+            "future": False,
+            "past": False,
+            "withoutMP": False,
+            "undoneTaskFilter": False,
+            "haveScriptFilter": False,
+            "adFilter": True,
+            "onServerFilter": False,
+            "audioFilter": False,
+            "imageFilter": False,
+            "textFilter": False,
+            "unknownFileTypeFilter": False,
+            "noFileFilter": False,
             "current_filter": "",
             "brand_list": [],
             "contragent_list": [],

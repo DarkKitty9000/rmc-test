@@ -349,7 +349,7 @@ class Contragent(Base):
     )
     contact_persons = relationship(
         "ContactPerson",
-        secondary= contragent_cp,
+        secondary= 'contragent_cp',
         back_populates="contragents"
     )
     """conte ts = relationship(
