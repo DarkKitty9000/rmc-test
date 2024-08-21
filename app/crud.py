@@ -40,8 +40,8 @@ def get_nomenclature_placing_from_db_for_user(
     # Получаем всех контрагентов по пользователю.
         contragents = get_contragent_by_user(db = db, user = user)
         try:
-            response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).filter(
-                    models.nomenclature_contragent.contragent_link.in_(contragents)    
+            response = db.query(models.NomenclaturePlacing).join(models.nomenclature_contragent).join(models.Contragent).filter(
+                    models.Contragent.full_name.in_(contragents)    
                 ).all()
             return response
         except Exception as e:
